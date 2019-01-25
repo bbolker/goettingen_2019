@@ -1,0 +1,31 @@
+---
+title: "Göttingen GLMM workshop schedule"
+date: "`r format(Sys.time(),'%d %b %Y')`"
+---
+
+Daily sessions (roughly): 0900-1030; coffee; 1100-1230; lunch; 1330-1500; coffee; 1530-1630
+
+**approximate and subject to change!**
+
+## Monday: graphics, GLM reminder, GLMM overview, inference/philosophy
+
+- intro/overview
+- ggplot/graphics intro
+- GLM reminder
+- mixed models overview
+- statistical inference/philosophy
+
+## Tuesday: GLMM basics
+
+- generalized linear mixed models: practical details, workflow
+- mixed models: lab
+- mixed models: advanced/troubleshooting
+
+## Wednesday: Bayesian intro/advanced GLMMs
+
+- basic Bayes
+- Bayesian mixed models
+- Bayes lab
+- wrap-up/additional topics
+
+

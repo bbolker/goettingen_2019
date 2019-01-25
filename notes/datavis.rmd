@@ -1,0 +1,144 @@
+---
+title: Data visualization, focusing on ggplot and multilevel data
+author: Ben Bolker
+date: "`r format(Sys.time(), '%H:%M %d %B %Y')`"
+bibliography: [../vis.bib, ../glmm.bib]
+output: html_document
+---
+
+![cc](pix/cc-attrib-nc.png)
+Licensed under the 
+[Creative Commons attribution-noncommercial license](http://creativecommons.org/licenses/by-nc/3.0/).
+Please share \& remix noncommercially, mentioning its origin.
+
+```{r setup, echo=FALSE,message=FALSE}
+library(knitr)
+opts_knit$set(fig.align="center",fig.width=7,fig.height=5,
+               out.width="0.7\\textwidth",tidy=FALSE,use.highlight=TRUE)
+knit_hooks$set(basefig=function(before, options, envir) {
+                   if (before) {
+                       par(bty="l",las=1)
+                   } else { }
+               })
+``` 
+
+## Basic criteria for data presentation
+
+Keynote talk by @rauser_how_2016 is **strongly** recommended.
+
+Visual perception of quantitative information: [Cleveland hierarchy](http://processtrends.com/toc_data_visualization.htm) [@cleveland_graphical_1984,@cleveland_graphical_1987,@cleveland_visualizing_1993]
+
+![cleveland](pix/data_vis_1.png)
+
+## Techniques for multilevel data
+
+* faceting (= trellis plots = small multiples) vs grouping ("spaghetti plots")
+* join data within a group by lines (perhaps thin/transparent)
+* colour lines by group (more useful for explanatory than presentation graphics)
+* dynamic graphics (hovertext)
+* other grouping techniques: `ggalt::geom_encircle`, `stat_centseg` (from `../R/geom_cstar.R`)
+* depends on context: how many groups, what kind of predictors?
+
+`ggplot2` makes it fairly easy to do a simple *two-stage* analysis on the fly, e.g. with the CBPP data discussed below:
+
+```{r ggplot_mult2,eval=FALSE}
+geom_smooth(aes(colour=herd,weight=size),
+            method="glm",
+            method.args=list(family=binomial),
+            se=FALSE)
+```
+(ignore `glm.fit` warnings if you try this)
+
+## ggplot 
+
+- based on Wilkinson's "Grammar of Graphics"
+- documented in a book (see below) and on a [web site](http://had.co.nz/ggplot2), as well as an active [mailing list](http://groups.google.com/group/ggplot2)
+- explicit mapping from variables to "aesthetics": e.g. x, y, colour, size, shape
+- easier to overlay multiple data sets, data summaries, model predictions etc.
+- rendering can be slow
+- `ggalt`, `gridExtra`, `ggExtra`, `cowplot`, `directlabels` packages useful
+- [ggplot gallery](http://www.ggplot2-exts.org/gallery/); 
+
+## ggplot intro
+
+mappings + geoms
+
+See [Karthik Ram's ggplot intro](https://github.com/karthikram/ggplot-lecture) or [my intro for disease ecologists](http://ms.mcmaster.ca/~bolker/eeid/ecology/ggplot.pdf), among many others.
+
+# Example/exercise
+
+```{r pkgs,message=FALSE}
+library("ggplot2"); theme_set(theme_bw())
+library(ggalt)
+source("../R/geom_cstar.R")
+```
+
+## cbpp data set
+
+Contagious bovine pleuropneumonia (CBPP): from @lesnoff_within-herd_2004, via the `lme4` package. See `?lme4::cbpp` for details.
+
+```{r ggplot2}
+data("cbpp",package="lme4")
+## make period *numeric* so lines will be connected/grouping won't happen
+cbpp2 <- transform(cbpp,period=as.numeric(as.character(period)))
+g0 <- ggplot(cbpp2,aes(period,incidence/size))
+```
+
+### spaghetti plot
+
+```{r spaghetti,fig.keep="none"}
+g1 <- g0+geom_line(aes(colour=herd))+geom_point(aes(size=size,colour=herd))
+```
+
+Do we need the colours?
+```{r nocol,fig.keep="none"}
+g2 <- g0+geom_line(aes(group=herd))+geom_point(aes(size=size,group=herd))
+```
+
+Facet instead:
+
+```{r facet,fig.keep="none"}
+g4 <- g1+facet_wrap(~herd)
+```
+
+Order by average prop. incidence, using the `%+%` trick:
+
+```{r order,fig.keep="none"}
+cbpp2R <- transform(cbpp2,herd=reorder(herd,incidence/size))
+g4 %+% cbpp2R
+```
+
+## gopher tortoise mycoplasma data
+
+Gopher tortoise data (from @ozgul_upper_2009, see [ecostats chapter](http://bbolker.github.io/mixedmodels-misc/ecostats_chap.html#data))
+
+Plot density of shells from freshly dead tortoises (`shells/Area`) as a function of mycoplasmal prevalence (%, `prev`): you may want to consider site, year of collection, or population density as well.
+
+```{r gopher1,fig.keep="none"}
+load("../data/gopherdat2.RData")
+g5 <- ggplot(Gdat,aes(prev,shells/Area))+geom_point()
+```
+
+```{r gopher2,fig.keep="none"}
+g5+geom_encircle(aes(group=Site))
+g5+stat_centseg(aes(group=Site),cfun=mean)
+```
+
+## clipping data
+
+Data from
+
+```{r banta1,fig.keep="none"}
+load("../data/Banta.RData")
+dat.tf$ltf1 <- log(dat.tf$total.fruits+1)
+ggplot(dat.tf,aes(nutrient,ltf1))+geom_point()+
+    facet_wrap(~amd)
+## calc mean by group
+aggdat <- aggregate(ltf1~popu+gen+amd+nutrient,FUN=mean,data=dat.tf)
+```
+
+```{r sessioninfo}
+sessionInfo()
+```
+
+## References
