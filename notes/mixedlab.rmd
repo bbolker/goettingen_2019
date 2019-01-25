@@ -182,7 +182,7 @@ qqmath(lmer2,col=dataf$roostsitu,pch=dataf$mnth)
 ```
 
 We can also do this with `broom.mixed::augment()` and `stat_qq()` (although there are also some some limitations - `colour` argument doesn't actually work...)
-```{r ggqq,fig.keep="none",cache=TRUE}
+```{r ggqq,fig.keep="none",cache=TRUE,message=FALSE}
 ggplot(augment(lmer2),
        aes(sample=.resid/sd(.resid)))+  ## scale to variance=1
     stat_qq(aes(group=1,colour=roostsitu))+
@@ -201,7 +201,7 @@ plot(lmer2,roostsitu~resid(.))
 
 Might be easier with `augment`:
 
-```{r diagbox_gg,fig.keep="none"}
+```{r diagbox_gg,fig.keep="none",message=FALSE}
 aa <- augment(lmer2)
 ggplot(aa,aes(roostsitu,.resid))+
     geom_boxplot()+coord_flip()
