@@ -83,12 +83,12 @@ most typical scientific goal
 *qualitative* statements about clarity and importance of effects:
 
 - effects that are distinguishable from null hypothesis of noise
-- test among discrete hypotheses ![](pix/dbend_sm.png)
+- test among discrete hypotheses ![](pix/dbend_sm.png) (e.g. see [here](https://github.com/bbolker/discretization/blob/master/git_push/discrete.pdf))
 
 *quantitative* statements:
 
 - relative strength/magnitude of effects
-- importance (e.g. fraction variance explained)
+- importance (e.g. $R^2$?)
 
 ## what do p-values really mean?
 
@@ -100,7 +100,7 @@ most typical scientific goal
 
 ## p-value example
 
-```{r pvals,echo=FALSE}
+```{r pvals,echo=FALSE,message=FALSE}
 dd <- data.frame(ttt=LETTERS[1:4],y=c(1,1,5,5),bar=c(0.6,1.5,0.6*5,1.5*5))
 dd <- transform(dd,pvalue=2*pnorm(y,sd=bar/1.96,lower.tail=FALSE))
 cc <- as.matrix(dd[,"pvalue"])
@@ -108,7 +108,7 @@ dimnames(cc) <- list(dd$ttt,"p value")
 printCoefmat(cc,P.values=TRUE,has.Pvalue=TRUE,cs.ind=numeric(0),
              tst.ind=numeric(0),digits=3)
 
-```{r pvalplot,echo=FALSE}
+```{r pvalplot,echo=FALSE,message=FALSE}
 library(ggplot2); theme_set(theme_bw())
 ggplot(dd,aes(ttt,y))+
     geom_pointrange(aes(ymin=y-bar,ymax=y+bar))+
@@ -134,12 +134,17 @@ Why does weather not seem to have an effect???
 
 # realism in data analysis
 
-## how much data do you need for a given model?
+## the bias-variance tradeoff
 
-- link to video
-- rule of thumb: 10-20 per data point
-- rules for continuous, count, binomial data
-- counting data points/"degrees of freedom" for clustered data?
+![](pix/bias_variance.png)
+
+## what about machine learning?
+
+- *shrinkage methods*: e.g. penalized regression (ridge, lasso)
+- attempt to optimize bias/variance  
+(more efficient than model selection)
+- inference after such optimization is **very hard** [@dezeure_high-dimensional_2015]
+- in some cases we can prove there is no free lunch
 
 ## dimension reduction
 
@@ -147,6 +152,13 @@ Why does weather not seem to have an effect???
 - discard interactions
 - simplify questions
 - collapse variables, e.g. by PCA
+
+## how much data do you need for a given model?
+
+- link to video
+- rule of thumb: 10-20 per data point
+- rules for continuous, count, binomial data
+- counting data points/"degrees of freedom" for clustered data?
 
 # overview of inference
 

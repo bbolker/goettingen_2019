@@ -109,7 +109,7 @@ g4 <- g1+facet_wrap(~herd)
 
 Order by average prop. incidence, using the `%+%` trick:
 
-```{r order,fig.keep="none"}
+```{r order,fig.keep="none",message=FALSE}
 cbpp2R <- transform(cbpp2,herd=reorder(herd,incidence/size))
 g4 %+% cbpp2R
 ```
@@ -141,8 +141,8 @@ but
 
 ```{r banta1,fig.keep="none"}
 load("../data/Banta.RData")
-dat.tf$ltf1 <- log(dat.tf$total.fruits+1)
-ggplot(dat.tf,aes(nutrient,total.fruits,colour=gen))+
+## dat.tf$ltf1 <- log(dat.tf$total.fruits+1)
+g6 <- ggplot(dat.tf,aes(nutrient,total.fruits,colour=gen))+
     geom_point()+
     scale_y_continuous(trans="log1p")+
     facet_wrap(~amd)+
@@ -150,7 +150,20 @@ ggplot(dat.tf,aes(nutrient,total.fruits,colour=gen))+
                  geom="line")
 ```
 
-```{r sessioninfo}
+If `stat_summary` is used with `fun.data=`, it can also compute confidence intervals.  Try `"mean_cl_boot"` or `"mean_cl_normal"` (see `?mean_cl_boot`)
+
+Dynamic graphics:
+
+```{r plotly_ex,warning=FALSE,eval=FALSE}
+library(plotly)
+ggplotly(g6)
+```
+
+## exercise
+
+Pick a grouped data set of your own. 
+
+```{r sessioninfo,eval=FALSE,echo=FALSE}
 sessionInfo()
 ```
 
