@@ -1,0 +1,5 @@
+#!/bin/bash
+cd ../gh-pages/notes
+make $1.html
+firefox $1.html &
+cd ../..

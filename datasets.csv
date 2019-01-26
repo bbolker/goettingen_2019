@@ -1,0 +1,12 @@
+name,clustered?,source,reference
+lizards,n,`brglm` package,@schoener_nonsynchronous_1970
+tundra,y,tundra.csv,@belshe_tundra_2013
+ticks,y,Elston2001_tickdata.txt,@elston_analysis_2001
+seastar,y,culcita.RData,@mckeon_multiple_2012
+Owls,y,`glmmTMB` package,@roulin_nestling_2007
+Arabidopsis,y,Banta.RData,@banta_comprehensive_2010
+Contraception,y,`mlmRev` package,@steele_immunization_1996
+Gopher tortoises,y,gopherdat2.RData,@ozgul_upper_2009
+sea turtle nesting,n,dufemalepers.csv,@Tiwari+2006
+AIDS,n,aids.csv,@dobson_introduction_2008
+singing mouse,y,singingmouse.csv,@pasch_interspecific_2013
