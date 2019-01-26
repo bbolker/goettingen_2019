@@ -1,6 +1,6 @@
 SRCDIR=..
 
-notes += modeling_inference glmm datavis bayes bayeslab mixed_details mixedlab glmm_details glmmlab addons
+notes += modeling_inference glm_basic glm_intermediate glmm datavis bayes bayeslab mixed_details mixedlab glmm_details glmmlab addons
 
 nnhtml := $(notes:%=notes/%.html)
 nnrmd := $(notes:%=notes/%.rmd)
@@ -14,7 +14,7 @@ dd := $(Datasets:%=data/%)
 rr := $(Rfiles:%=R/%)
 
 ## syllabus.html 
-all: glmm_data.zip setup.html schedule.html ${nnhtml} ${nnrmd} ${nnslides} ${rr}
+all: glmm_data.zip setup.html schedule.html datasets.html ${nnhtml} ${nnrmd} ${nnslides} ${rr}
 
 notes/%.rmd:  ${SRCDIR}/notes/%.[Rr]md
 	cp $< $@

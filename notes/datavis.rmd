@@ -36,7 +36,7 @@ Visual perception of quantitative information: [Cleveland hierarchy](http://proc
 * join data within a group by lines (perhaps thin/transparent)
 * colour lines by group (more useful for explanatory than presentation graphics)
 * dynamic graphics (hovertext)
-* other grouping techniques: `ggalt::geom_encircle`, `stat_centseg` (from `../R/geom_cstar.R`)
+* other grouping techniques: `stat_ellipse`, `ggalt::geom_encircle`, `stat_centseg` (from `../R/geom_cstar.R`)
 * depends on context: how many groups, what kind of predictors?
 
 `ggplot2` makes it fairly easy to do a simple *two-stage* analysis on the fly, e.g. with the CBPP data discussed below:
@@ -51,13 +51,13 @@ geom_smooth(aes(colour=herd,weight=size),
 
 ## ggplot 
 
-- based on Wilkinson's "Grammar of Graphics"
-- documented in a book (see below) and on a [web site](http://had.co.nz/ggplot2), as well as an active [mailing list](http://groups.google.com/group/ggplot2)
+- **G**rammar of **G**raphics: based on @Wilkinson1999
+- documented in @wickham_ggplot2_2009, also [web site](http://had.co.nz/ggplot2), [mailing list](http://groups.google.com/group/ggplot2), [StackOverflow tag](https://stackoverflow.com/questions/tagged/ggplot2)
 - explicit mapping from variables to "aesthetics": e.g. x, y, colour, size, shape
 - easier to overlay multiple data sets, data summaries, model predictions etc.
 - rendering can be slow
 - `ggalt`, `gridExtra`, `ggExtra`, `cowplot`, `directlabels` packages useful
-- [ggplot gallery](http://www.ggplot2-exts.org/gallery/); 
+- [ggplot gallery](http://www.ggplot2-exts.org/gallery/); [ggplot extensions](https://www.ggplot2-exts.org/)
 
 ## ggplot intro
 
@@ -69,11 +69,11 @@ See [Karthik Ram's ggplot intro](https://github.com/karthikram/ggplot-lecture) o
 
 ```{r pkgs,message=FALSE}
 library("ggplot2"); theme_set(theme_bw())
-library(ggalt)
+library("ggalt")
 source("../R/geom_cstar.R")
 ```
 
-## cbpp data set
+## time series: cbpp data set
 
 Contagious bovine pleuropneumonia (CBPP): from @lesnoff_within-herd_2004, via the `lme4` package. See `?lme4::cbpp` for details.
 
@@ -81,18 +81,24 @@ Contagious bovine pleuropneumonia (CBPP): from @lesnoff_within-herd_2004, via th
 data("cbpp",package="lme4")
 ## make period *numeric* so lines will be connected/grouping won't happen
 cbpp2 <- transform(cbpp,period=as.numeric(as.character(period)))
-g0 <- ggplot(cbpp2,aes(period,incidence/size))
+g0 <- ggplot(cbpp2,aes(period,incidence/size)) ## plot template (no geom)
 ```
 
 ### spaghetti plot
 
 ```{r spaghetti,fig.keep="none"}
-g1 <- g0+geom_line(aes(colour=herd))+geom_point(aes(size=size,colour=herd))
+g1 <- (g0
+    +geom_line(aes(colour=herd))
+    +geom_point(aes(size=size,colour=herd))
+)
 ```
 
 Do we need the colours?
 ```{r nocol,fig.keep="none"}
-g2 <- g0+geom_line(aes(group=herd))+geom_point(aes(size=size,group=herd))
+g2 <- (g0
+    +geom_line(aes(group=herd))
+    +geom_point(aes(size=size,group=herd))
+)
 ```
 
 Facet instead:
@@ -108,7 +114,7 @@ cbpp2R <- transform(cbpp2,herd=reorder(herd,incidence/size))
 g4 %+% cbpp2R
 ```
 
-## gopher tortoise mycoplasma data
+## scatterplots: gopher tortoise mycoplasma data
 
 Gopher tortoise data (from @ozgul_upper_2009, see [ecostats chapter](http://bbolker.github.io/mixedmodels-misc/ecostats_chap.html#data))
 
@@ -121,20 +127,27 @@ g5 <- ggplot(Gdat,aes(prev,shells/Area))+geom_point()
 
 ```{r gopher2,fig.keep="none"}
 g5+geom_encircle(aes(group=Site))
+g5+geom_encircle(aes(group=Site),s_shape=1,expand=0) ## convex hulls
+## connect points to center
 g5+stat_centseg(aes(group=Site),cfun=mean)
 ```
 
-## clipping data
+## treatment comparisons: clipping data
 
-Data from
+Data from @banta_comprehensive_2010:
+
+Easier if there is one data point per group (connect with lines),
+but 
 
 ```{r banta1,fig.keep="none"}
 load("../data/Banta.RData")
 dat.tf$ltf1 <- log(dat.tf$total.fruits+1)
-ggplot(dat.tf,aes(nutrient,ltf1))+geom_point()+
-    facet_wrap(~amd)
-## calc mean by group
-aggdat <- aggregate(ltf1~popu+gen+amd+nutrient,FUN=mean,data=dat.tf)
+ggplot(dat.tf,aes(nutrient,total.fruits,colour=gen))+
+    geom_point()+
+    scale_y_continuous(trans="log1p")+
+    facet_wrap(~amd)+
+    stat_summary(fun.y=mean,aes(group=interaction(popu,gen)),
+                 geom="line")
 ```
 
 ```{r sessioninfo}

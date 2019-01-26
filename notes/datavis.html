@@ -186,7 +186,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Data visualization, focusing on ggplot and multilevel data</h1>
 <h4 class="author"><em>Ben Bolker</em></h4>
-<h4 class="date"><em>10:08 25 January 2019</em></h4>
+<h4 class="date"><em>11:24 26 January 2019</em></h4>
 
 </div>
 
@@ -208,7 +208,7 @@ $(document).ready(function () {
 <li>join data within a group by lines (perhaps thin/transparent)</li>
 <li>colour lines by group (more useful for explanatory than presentation graphics)</li>
 <li>dynamic graphics (hovertext)</li>
-<li>other grouping techniques: <code>ggalt::geom_encircle</code>, <code>stat_centseg</code> (from <code>../R/geom_cstar.R</code>)</li>
+<li>other grouping techniques: <code>stat_ellipse</code>, <code>ggalt::geom_encircle</code>, <code>stat_centseg</code> (from <code>../R/geom_cstar.R</code>)</li>
 <li>depends on context: how many groups, what kind of predictors?</li>
 </ul>
 <p><code>ggplot2</code> makes it fairly easy to do a simple <em>two-stage</em> analysis on the fly, e.g. with the CBPP data discussed below:</p>
@@ -221,13 +221,13 @@ $(document).ready(function () {
 <div id="ggplot" class="section level2">
 <h2>ggplot</h2>
 <ul>
-<li>based on Wilkinson’s “Grammar of Graphics”</li>
-<li>documented in a book (see below) and on a <a href="http://had.co.nz/ggplot2">web site</a>, as well as an active <a href="http://groups.google.com/group/ggplot2">mailing list</a></li>
+<li><strong>G</strong>rammar of <strong>G</strong>raphics: based on <span class="citation">Wilkinson (1999)</span></li>
+<li>documented in <span class="citation">Wickham (2009)</span>, also <a href="http://had.co.nz/ggplot2">web site</a>, <a href="http://groups.google.com/group/ggplot2">mailing list</a>, <a href="https://stackoverflow.com/questions/tagged/ggplot2">StackOverflow tag</a></li>
 <li>explicit mapping from variables to “aesthetics”: e.g. x, y, colour, size, shape</li>
 <li>easier to overlay multiple data sets, data summaries, model predictions etc.</li>
 <li>rendering can be slow</li>
 <li><code>ggalt</code>, <code>gridExtra</code>, <code>ggExtra</code>, <code>cowplot</code>, <code>directlabels</code> packages useful</li>
-<li><a href="http://www.ggplot2-exts.org/gallery/">ggplot gallery</a>;</li>
+<li><a href="http://www.ggplot2-exts.org/gallery/">ggplot gallery</a>; <a href="https://www.ggplot2-exts.org/">ggplot extensions</a></li>
 </ul>
 </div>
 <div id="ggplot-intro" class="section level2">
@@ -238,20 +238,26 @@ $(document).ready(function () {
 <div id="exampleexercise" class="section level1">
 <h1>Example/exercise</h1>
 <pre class="r"><code>library(&quot;ggplot2&quot;); theme_set(theme_bw())
-library(ggalt)
+library(&quot;ggalt&quot;)
 source(&quot;../R/geom_cstar.R&quot;)</code></pre>
-<div id="cbpp-data-set" class="section level2">
-<h2>cbpp data set</h2>
+<div id="time-series-cbpp-data-set" class="section level2">
+<h2>time series: cbpp data set</h2>
 <p>Contagious bovine pleuropneumonia (CBPP): from <span class="citation">Lesnoff et al. (2004)</span>, via the <code>lme4</code> package. See <code>?lme4::cbpp</code> for details.</p>
 <pre class="r"><code>data(&quot;cbpp&quot;,package=&quot;lme4&quot;)
 ## make period *numeric* so lines will be connected/grouping won't happen
 cbpp2 &lt;- transform(cbpp,period=as.numeric(as.character(period)))
-g0 &lt;- ggplot(cbpp2,aes(period,incidence/size))</code></pre>
+g0 &lt;- ggplot(cbpp2,aes(period,incidence/size)) ## plot template (no geom)</code></pre>
 <div id="spaghetti-plot" class="section level3">
 <h3>spaghetti plot</h3>
-<pre class="r"><code>g1 &lt;- g0+geom_line(aes(colour=herd))+geom_point(aes(size=size,colour=herd))</code></pre>
+<pre class="r"><code>g1 &lt;- (g0
+    +geom_line(aes(colour=herd))
+    +geom_point(aes(size=size,colour=herd))
+)</code></pre>
 <p>Do we need the colours?</p>
-<pre class="r"><code>g2 &lt;- g0+geom_line(aes(group=herd))+geom_point(aes(size=size,group=herd))</code></pre>
+<pre class="r"><code>g2 &lt;- (g0
+    +geom_line(aes(group=herd))
+    +geom_point(aes(size=size,group=herd))
+)</code></pre>
 <p>Facet instead:</p>
 <pre class="r"><code>g4 &lt;- g1+facet_wrap(~herd)</code></pre>
 <p>Order by average prop. incidence, using the <code>%+%</code> trick:</p>
@@ -261,24 +267,29 @@ g4 %+% cbpp2R</code></pre>
 ## adjust the group aesthetic?</code></pre>
 </div>
 </div>
-<div id="gopher-tortoise-mycoplasma-data" class="section level2">
-<h2>gopher tortoise mycoplasma data</h2>
+<div id="scatterplots-gopher-tortoise-mycoplasma-data" class="section level2">
+<h2>scatterplots: gopher tortoise mycoplasma data</h2>
 <p>Gopher tortoise data (from <span class="citation">Ozgul et al. (2009)</span>, see <a href="http://bbolker.github.io/mixedmodels-misc/ecostats_chap.html#data">ecostats chapter</a>)</p>
 <p>Plot density of shells from freshly dead tortoises (<code>shells/Area</code>) as a function of mycoplasmal prevalence (%, <code>prev</code>): you may want to consider site, year of collection, or population density as well.</p>
 <pre class="r"><code>load(&quot;../data/gopherdat2.RData&quot;)
 g5 &lt;- ggplot(Gdat,aes(prev,shells/Area))+geom_point()</code></pre>
 <pre class="r"><code>g5+geom_encircle(aes(group=Site))
+g5+geom_encircle(aes(group=Site),s_shape=1,expand=0) ## convex hulls
+## connect points to center
 g5+stat_centseg(aes(group=Site),cfun=mean)</code></pre>
 </div>
-<div id="clipping-data" class="section level2">
-<h2>clipping data</h2>
-<p>Data from</p>
+<div id="treatment-comparisons-clipping-data" class="section level2">
+<h2>treatment comparisons: clipping data</h2>
+<p>Data from <span class="citation">Banta, Stevens, and Pigliucci (2010)</span>:</p>
+<p>Easier if there is one data point per group (connect with lines), but</p>
 <pre class="r"><code>load(&quot;../data/Banta.RData&quot;)
 dat.tf$ltf1 &lt;- log(dat.tf$total.fruits+1)
-ggplot(dat.tf,aes(nutrient,ltf1))+geom_point()+
-    facet_wrap(~amd)
-## calc mean by group
-aggdat &lt;- aggregate(ltf1~popu+gen+amd+nutrient,FUN=mean,data=dat.tf)</code></pre>
+ggplot(dat.tf,aes(nutrient,total.fruits,colour=gen))+
+    geom_point()+
+    scale_y_continuous(trans=&quot;log1p&quot;)+
+    facet_wrap(~amd)+
+    stat_summary(fun.y=mean,aes(group=interaction(popu,gen)),
+                 geom=&quot;line&quot;)</code></pre>
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>## R Under development (unstable) (2019-01-08 r75959)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
@@ -322,6 +333,9 @@ aggdat &lt;- aggregate(ltf1~popu+gen+amd+nutrient,FUN=mean,data=dat.tf)</code></
 <div id="references" class="section level2 unnumbered">
 <h2>References</h2>
 <div id="refs" class="references">
+<div id="ref-banta_comprehensive_2010">
+<p>Banta, Joshua A., Martin H. H. Stevens, and Massimo Pigliucci. 2010. “A Comprehensive Test of the ’Limiting Resources’ Framework Applied to Plant Tolerance to Apical Meristem Damage.” <em>Oikos</em> 119 (2): 359–69. doi:<a href="https://doi.org/10.1111/j.1600-0706.2009.17726.x">10.1111/j.1600-0706.2009.17726.x</a>.</p>
+</div>
 <div id="ref-cleveland_visualizing_1993">
 <p>Cleveland, William. 1993. <em>Visualizing Data</em>. Summit, NJ: Hobart Press.</p>
 </div>
@@ -339,6 +353,12 @@ aggdat &lt;- aggregate(ltf1~popu+gen+amd+nutrient,FUN=mean,data=dat.tf)</code></
 </div>
 <div id="ref-ozgul_upper_2009">
 <p>Ozgul, Arpat, Madan K Oli, Benjamin M Bolker, and Carolina Perez-Heydrich. 2009. “Upper Respiratory Tract Disease, Force of Infection, and Effects on Survival of Gopher Tortoises.” <em>Ecological Applications</em> 19 (3): 786–98. <a href="http://www.ncbi.nlm.nih.gov/pubmed/19425439" class="uri">http://www.ncbi.nlm.nih.gov/pubmed/19425439</a>.</p>
+</div>
+<div id="ref-wickham_ggplot2_2009">
+<p>Wickham, Hadley. 2009. <em>Ggplot2: Elegant Graphics for Data Analysis</em>. 2nd Printing. Springer.</p>
+</div>
+<div id="ref-Wilkinson1999">
+<p>Wilkinson, L. 1999. <em>The Grammar of Graphics</em>. New York: Springer.</p>
 </div>
 </div>
 </div>
