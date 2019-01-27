@@ -108,7 +108,7 @@ mod2 <- glmer(predation~ttt+(1|block),family=binomial,data=stierdat)
 ## AGQ 
 mod2B <- glmer(predation~ttt+(1|block),family=binomial,
                nAGQ=20,data=stierdat)
-mod5=glmmPQL(predation~ttt,random=~1|block,family=binomial,data=stierdat)
+mod5=MASS::glmmPQL(predation~ttt,random=~1|block,family=binomial,data=stierdat)
 levels(stierdat$ttt) <- c("none","shrimp","crabs","both")
 m <- melt(stierdat[,1:3],id.vars=1:2)
 m2 <- dcast(m,ttt~variable,fun.aggregate=mean)
@@ -299,8 +299,8 @@ y_{ij} & = \beta_0 + \beta_1 x_{ij} + \epsilon_{0,ij} + \epsilon_{1,j} \\
 \end{split}
 $$
 
-Could have multiple, possibly nested levels of random effects
-(genotype within population within region ...)
+- Could have multiple, nested levels of random effects  
+(genotype within population within region ...), or *crossed* REs
 
 ## Random-slopes model
 
@@ -314,6 +314,8 @@ y_{ij} & = \beta_0 + \beta_1 x_{ij} + \epsilon_{0,ij} + \epsilon_{1,j} +
 \end{split}
 $$
 
+- variation in the *effect* of a treatment or covariate across groups
+- variation in intercept, slope allowed to be correlated
 
 ## General definition
 
@@ -452,7 +454,7 @@ par(op)
 
 ## Shrinkage in a random-slopes model
 
-From Christophe Lalanne, see [here](https://stats.stackexchange.com/questions/51186/what-would-be-an-illustrative-picture-for-linear-mixed-models) and [here](https://gist.github.com/chlalanne/5074855):
+From Christophe Lalanne, see [here](https://stats.stackexchange.com/questions/51186/what-would-be-an-illustrative-picture-for-linear-mixed-models):
 
 ```{r sleepstudy_shrinkage, echo=FALSE}
 library(lme4)
