@@ -536,7 +536,7 @@ text(rep(1,5),seq(1.6,by=-0.18,length.out=5),
 
 ## Wald tests
 
--   typical results of `summary`
+-   typical results of `summary()`
 -   exact for ANOVA, regression:  
 approximation for GLM(M)s
 -   fast
@@ -545,14 +545,16 @@ approximation for GLM(M)s
 ## Likelihood ratio tests
 
 -   better than Wald, but still have two problems:
-    -   “denominator degrees of freedom” (when estimating scale)
-    -   for GLMMs, distributions are approximate anyway (Bartlett corrections)
+-   “denominator degrees of freedom”  
+(when estimating scale)
+    -   finite-size issues for GLM(M)s: Bartlett corrections
     -   Kenward-Roger correction? [@stroup_rethinking_2014]
 -   Profile confidence intervals: expensive/fragile
 
-## p-values choices?
+## finite-size p-values??
 
-- guess from classic design ([R code](calcDenDF.R))
+- hope that min grps > 42
+- guess denominator DF from classic design ([R code](../R/calcDenDF.R))
 - conservative: take minimum number of groups - 1
 - Satterthwaite/Kenward-Roger (`lmerTest`, LMMs only)
 - parametric bootstrap (`pbkrtest`)
@@ -584,13 +586,13 @@ approximation for GLM(M)s
 
 - JAGS (R: `rjags`, `r2jags`)
 - TensorFlow (R: `greta`)
-- NIMBLE 
+- NIMBLE (R: `nimble` package)
 - Stan (R: `rstan`)
 - TMB (R: `TMB`)
 
 ## On beyond R
 
--   Julia: MixedModels package
+-   Julia: `MixedModels.jl` package
 -   SAS: PROC MIXED, NLMIXED
 -   AS-REML
 -   Stata (GLLAMM, xtmelogit)
@@ -607,6 +609,18 @@ approximation for GLM(M)s
 -   Big data: speed!
 -   Model diagnosis
 -   Confidence intervals accounting for uncertainty in variances
+
+## The need for speed [@brooks_modeling_2017]
+
+<!-- https://tex.stackexchange.com/questions/250623/how-to-generate-a-4-up-table-of-images-with-pandoc -->
+
+
+![](pix/bigfit2.png)
+
+## more speed
+
+![](pix/bigfit1.png)
+ 
 
 ## Spatial and temporal correlations
 
@@ -627,12 +641,14 @@ approximation for GLM(M)s
 -   hybrid & improved MCMC methods
 -   *Reliable* assessment of out-of-sample performance
 
-## 
+## resources
 
 - <http://ms.mcmaster.ca/~bolker/misc/private/14-Fox-Chap13.pdf>
 - <https://bbolker.github.io/mixedmodels-misc/ecostats_chap.html>
 -  @bolker_glmm_2014
 
-![image](pix/foxbook.png)
+<img src="pix/foxbook.png" height="100">
 
 (code ASPROMP8)
+
+## references  {.refs}

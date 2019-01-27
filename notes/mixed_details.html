@@ -422,13 +422,55 @@ FE describes overall trend, RE describes variation around the trend</li>
 <li><p>RE “nested within” FE, e.g. if not enough groups at the top level; <code>y ~ g1 + (1|g1:g2)</code>; <em>more</em> parameters but fixed rather than random</p></li>
 </ul>
 </div>
+<div id="convergence-failures" class="section level2">
+<h2>Convergence failures <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB8AAAAeCAQAAAB++w0XAAAAAmJLR0QA/4ePzL8AAAAJcEhZcwAAAGEAAABhACIsoCsAAANvSURBVDjLhdRraNdlFAfwz/+yq27zkpu6iZe0zLbUKTJtLSrzhZeU1AoKhLAQLRK74IqgqCTDykhUXBKZEhWaKb7oYpZzxEaW0yniHcupayudczr/23690Pmfuq3vu3O+z5fnPOec5xtyKzJMUGSIVK0CIWEXHbFThXM3Hw3dFEdMNEuDCgec1ahFWKr+co2RZqPvtOgUEfOsNU60Ay4q31rPinQun2mNzM5pfZWY0RnZz+dG6Bp51slqX24cMzTb9D/yGrkyVLWF4XbUPcqNktKFOMlYu42MJ8LtqO5i5kvtQh41VyBdcke3ExHqajBa0SwcV8XlTRokajKgC3l/YZfFxDpq3UB9nJdmH8JSrleSKEmLAIVSBAKl8dfEscuLDkqX5wmD5dhnsQu6eccYfznhK2kiipR0XFpIsXIL/CAQCNTIxZ2qr8Wl5qhU3L5fYUQM0B2BT9U7JeEad1A1zjhwvdJqJ32iFT0Nbzv3oM2Wy0Sy1YZaqFWg1hSkYqKzAoFi/ZTIQI5Vtpp0tXVzfC8kX5kkk/2sQrKoZb4023R9bVOrv80+1Oph213ygmNKjfELQ21wt9uUWGywZR5CVAYG2WO9SkOQLgEFVhjmFWv0NMIGwyJW2mqHRr8a6kk5JqlXqw4F5tpvvF0OadLbZMV6G+mEj9X5W4LnorIMtkiScmttMtPTVqmy2tcCtSoVgakWGO2UEpucM0GhyxL1ChlhpECrQom2+Em690UkW+KgO+yX67BsSzWKeUm9B0zTrFRYyO9xs0o0zqPSbJFnoNMafOuSEFJMMlCqGpWmOm+zCk1tq9IeCUab7n7ljuihUUhMsmYpLspW5Edb7NHc/gu2R0yFo7JV6yVVshYxKQJRUdUO+kjdjYt6o/H18Ih5spxUZoBmzZoEWgR2ypFnvD7OaGi/54QVGesf3eSr9oWwYs+LGC5TkhY1qjRb4T31ZrtLlXppypVpjSDbmyqluGKDjbI8ZbgsOxx2wF5VjgtbJFcfh230m0wR9ebarS6Kc/7UYqXAEK8bZKsPPGO5Msddlux29zrqMQXmq7HOZ0Ied1ptW+ezLbXEJW/b7hv/IlG+Av0kuqJamUoxpJtimrc0etdrjsUH94ZDRtlr/S0eENyUmaXQDvd5WRD3uj8sFOrA5YNbMttc8KqKq8x/nMkZ7EPBUkAAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTQtMTItMzFUMTI6MTY6NTEtMDU6MDD0KtYoAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE0LTEyLTMxVDEyOjE2OjUxLTA1OjAwhXdulAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAAASUVORK5CYII=" /></h2>
+<ul>
+<li>convergence failures are common</li>
+<li>what do they really mean? how to fix them? when can they be ignored?</li>
+<li><strong>approximate</strong> test that gradient=0 and curvature is correct</li>
+<li>scale and center predictors; simplify model</li>
+<li>use <code>?allFit</code> to see whether different optimizers give sufficiently similar answers
+<ul>
+<li><code>$fixef</code>, etc.: are answers sufficiently similar?</li>
+<li><code>$llik</code>: how similar is goodness-of-fit?</li>
+</ul></li>
+</ul>
+<pre class="r"><code>m1 &lt;- lmer(Reaction ~ Days + (Days|Subject), sleepstudy)
+aa &lt;- allFit(m1)</code></pre>
+<pre><code>## Loading required namespace: dfoptim</code></pre>
+<pre><code>## bobyqa : [OK]
+## Nelder_Mead : [OK]
+## nlminbwrap : [OK]
+## nmkbw : [OK]
+## optimx.L-BFGS-B : [OK]
+## nloptwrap.NLOPT_LN_NELDERMEAD : [OK]
+## nloptwrap.NLOPT_LN_BOBYQA : [OK]</code></pre>
+<pre class="r"><code>ss &lt;- summary(aa)
+names(ss)</code></pre>
+<pre><code>## [1] &quot;which.OK&quot; &quot;msgs&quot;     &quot;fixef&quot;    &quot;llik&quot;     &quot;sdcor&quot;    &quot;theta&quot;   
+## [7] &quot;times&quot;    &quot;feval&quot;</code></pre>
+<pre class="r"><code>ss$fixef</code></pre>
+<pre><code>##                               (Intercept)     Days
+## bobyqa                           251.4051 10.46729
+## Nelder_Mead                      251.4051 10.46729
+## nlminbwrap                       251.4051 10.46729
+## nmkbw                            251.4051 10.46729
+## nloptwrap.NLOPT_LN_NELDERMEAD    251.4051 10.46729
+## nloptwrap.NLOPT_LN_BOBYQA        251.4051 10.46729</code></pre>
+<ul>
+<li>can be run in parallel</li>
+</ul>
+</div>
 <div id="restricted-maximum-likelihood-reml" class="section level2">
 <h2>Restricted maximum likelihood (REML)</h2>
 <ul>
 <li>reduce bias in estimated variances and covariances</li>
 <li>similar to dividing by <span class="math inline">\(n-1\)</span> instead of <span class="math inline">\(n\)</span> when computing sample variances</li>
-<li>example: paired <span class="math inline">\(t\)</span>-test</li>
-<li>works by</li>
+<li>e.g. estimate of variance in paired data
+<ul>
+<li>find <em>difference</em> of each pair, mean and variance of differences</li>
+</ul></li>
+<li>works <em>either</em> by scaling out fixed effects (LMM) <em>or</em> by integrating over uncertainty of fixed parameters (GLMM/<code>glmmTMB</code>)</li>
 </ul>
 </div>
 <div id="fit-model" class="section level2">

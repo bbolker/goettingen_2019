@@ -149,7 +149,7 @@ i2(f2)
     - Gamma(2): weakly regularizing
 - correlation matrices
     - Wishart, inverse-Wishart: small shape parameters
-    - LKJ priors [@lewandowski_generating_2009]: `eta>1` makes extreme correlations less likely
+    - LKJ or "onion" priors [@lewandowski_generating_2009]: `eta>1` makes extreme correlations less likely
 
 ## Sampling
 

@@ -454,4 +454,4 @@ For most cases you will want to set up a new data frame to do prediction rather 
 * originally developed for NCEAS summer institute, July 2013
 * updated, Alaska ASA workshop, August 2014
 * updated, Ottawa workshop, Jan 2016 (removed JAGS material)
-* updated, Morelia workshop (moved MCMCglmm to standalone)
+* updated, Morelia workshop (moved MCMCglmm to standalone Bayes) 

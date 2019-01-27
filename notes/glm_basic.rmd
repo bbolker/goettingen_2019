@@ -249,6 +249,11 @@ acf(residuals(g1)) ## check autocorrelation
 
 ## Diagnostics: the Big Lie
 
+- null-hypothesis testing of assumptions is iffy
+    - never reject for small data sets
+    - always reject for large data sets
+- but how do you know how large a problem to worry about?
+- gold standard: make your model more complex to show you didn't need to worry in the first place
 
 ## ggplot: check out quadratic model
 
