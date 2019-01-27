@@ -16,274 +16,11 @@ library(cowplot)
 library(dotwhisker)
 ```
 
-## Linear models
-
-- foundation for (G)LM(M)s, other complex models
-- flexible, robust, computationally efficient, standard
-- includes (multiple) regression, ANOVA, ANCOVA, ...
-- natural ways to express dependence, interactions
-
-## Linear models: assumptions
-
-- response variables:
-     - Gaussian (normally distributed)
-     - independent
-	 - *conditionally* homoscedastic (equal variance)
-	 - univariate
-- predictor variables
-     - numeric or categorical (nominal)
-
-## Linear models: math
-
-$$
-z = a + bx + cy + \epsilon
-$$
-or (more predictor variables)
-$$
-y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \epsilon
-$$
-or (more flexible distribution syntax)
-$$
-y \sim \textrm{Normal}(\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots, \sigma^2)
-$$
-or (more complex sets of predictors)
-$$
-\begin{split}
-\boldsymbol{\mu} & = \mathbf{X} \mathbf{\beta} \\
-y_i & \sim \textrm{Normal}(\mu_i,\sigma^2)
-\end{split}
-$$
-
-## what does "linear" mean?
-
-- $y$ is a linear function of the *parameters*  
-($\partial^2 y/\partial^2 \beta_i = 0$)
-- e.g. polynomials: $y = a + bx + cx^2 + dx^3$
-- or sinusoids: $y = a \sin(x) + b \cos(x)$
-- but **not**: power-law ($ax^b$), exponential ($a \exp(-bx)$)
-
-## marginal vs. conditional distributions
-
-- common mistake: worry about the overall distribution of the response,  
-rather than the *conditional* distribution (i.e., residuals)
-- if only categorical predictors, can mean-correct each group, then
-look at residuals
-- otherwise have to fit the model first!
-
-## example
-
-MPG vs displacement for cars
-
-```{r cars_lm}
-cars_lm <- lm(log10(mpg)~log10(disp),mtcars)
-```
-
-```{r marg_plot,echo=FALSE,fig.width=10}
-g1 <- ggMarginal(ggplot(mtcars,aes(disp,mpg))+geom_point()+
-                 scale_x_log10()+scale_y_log10()+
-                 geom_smooth(method="lm")+
-                 ggtitle("marginal"),
-                 margins="y",type="histogram")
-aa <- broom::augment(cars_lm,data=mtcars)
-g2 <- ggMarginal(ggplot(aa,aes(disp,.resid))+geom_point()+
-                 scale_x_log10()+
-                 ggtitle("conditional"),
-                 margins="y",type="histogram")
-plot_grid(g1,g2)
-```
-
-(We'll come back to how to judge this later)
-
-## categorical predictors
-
-- how do categorical predictors fit into this scheme?
-- *dummy variables*: convert to 0/1 values
-- R does this automatically with formula syntax
-- e.g. for two levels:
-
-```{r}
-dd <- data.frame(flavour=rep(c("chocolate","vanilla"),c(2,3)))
-print(dd)
-model.matrix(~flavour,dd)
-```
-
-- first alphabetical level (`chocolate`) used as default (use `relevel()` or `factor(...,levels=...)` to change default)
-- ![](pix/dbend_sm.png) *ordered factors* are handled differently
-
-## R formulas
-
-- @WilkinsonRogers1973
-- `response ~ predictor1 + predictor2 + ...`
-- numeric variables used "as is"
-- categorical variables (factors) converted to dummy variables
-- intercept added automatically (`1+ ...`)
-- interaction: `:` *multiplies* relevant columns
-- `a*b`: main effect plus interactions
-- `model.matrix(formula, data)`
-
-## Formulas, continued
-
-- `y~f`: 1-way ANOVA
-- `y~f+g`: 2-way ANOVA (additive)
-- `y~f*g`: 2-way ANOVA (with interaction)
-- `y~x`: univariate regression
-- `y~f+x`: ANCOVA (parallel slopes)
-- `y~f*x`: ANCOVA (with interaction, non-parallel slopes)
-- `y~x1+x2`: multivariate regression (additive)
-- `y~x1*x2`: multiv. regression with interaction
-
-If confused, (1) try to write out the equation; (2) `model.matrix()`
-
-## Contrasts
-
-- Machinery for translating categorical variables to dummy (0/1) variables
-- **treatment** contrasts (default):
-     - $\beta_1$ = intercept = expected value of first level (by default, "aardvark")
-     - $\beta_{i}$ = difference between level $i+1$ and baseline
-- **sum-to-zero** contrasts:
-     - $\beta_1$ = intercept = unweighted mean of all levels
-     - $\beta_{i}$ = difference between level $i$ and mean; last level not included (!)
-
-too many ways to change contrasts (globally via `options()`; as attribute of factor; `contrasts` argument in `lm()`)
-
-## Example 1 (treatment contrasts)
-
-Data on ant colonies from @GotelliEllison2004:
-
-```{r ants1}
-ants <- data.frame(
-    place=rep(c("field","forest"),c(6,4)),
-    colonies=c(12, 9, 12, 10,
-               9, 6, 4, 6, 7, 10))
-aggregate(colonies~place,data=ants,FUN=mean)
-pr <- function(m) printCoefmat(coef(summary(m)),digits=3,signif.stars=FALSE)
-pr(lm1 <- lm(colonies~place,data=ants))
-```
-
-## Ants: sum-to-zero contrasts
-
-```{r ants2}
-pr(lm2 <- update(lm1, contrasts=list(place=contr.sum)))
-```
-
-```{r}
-data(lizards,package="brglm")
-```
-
-## Interactions: example
-
-- Bear road-crossing
-- Predictor variables: sex (categorical: M/F), road type (categorical: major/minor), road length (continuous)
-- **Two-way interactions**
-     - sex $\times$ road length: "are females more sensitive to amount of road than males?"
-	 - sex $\times$ road type: "do females prefer major over minor roads more than males?"
-	 - road type $\times$ road length: "does amount of road affect crossings differently for different road types?"
-- **Three-way interaction**: does the difference of the effect of road length between road types differ between sexes?
-     	 
-## Centering [@schielzeth_simple_2010]
-
-- in interaction models, interpretation of main effects **depends on the center-point of the predictors**
-- *centering* makes main effects much more interpretable
-     - numeric predictors (subtracting the mean by default; other choices could be sensible)
-     - categorical predictors: sum-to-zero (weighted or unweighted)
-- e.g. if Gregorian year is a predictor, the intercept is at year 0 (!)
-- also improves model stability, decorrelates coefficients
-
-## Scaling [@schielzeth_simple_2010]
-
-- scaling parameters improves interpretability
-- standard deviation scaling:  
-parameter magnitudes = importance
-
-```{r scale_comp,fig.width=10}
-mtcars_big <- lm(mpg~.,data=mtcars)
-mtcars_big_sc <- lm(mpg~.,data=as.data.frame(scale(mtcars)))
-dwfun <- function(.,title) { dwplot(.,order_vars=names(sort(coef(.))))+
-                                 geom_vline(xintercept=0,linetype=2)+
-                                 ggtitle(title) }
-plot_grid(dwfun(mtcars_big,"unscaled"),dwfun(mtcars_big_sc,"scaled"))
-```
-
-## LM diagnostics
-
-- fitted vs. residual: pattern in mean? (linearity)
-- scale-location: pattern in variance? (homoscedasticity)
-- Q-Q plot: Normality of **residuals**
-- leverage/Cook's distance: influential points?
-- independence is often hard to test
-- Normality is the **least important** of these assumptions
- 
-## LM diagnostics
-
-```{r lmdiag,fig.width=8,fig.height=8}
-par(mfrow=c(2,2))
-plot(cars_lm)
-```
-
-- problems are not independent
-- deal with problems in order (location > scale > outliers > distribution)
-- smooth lines help interpretation
-- highlighted points are 3 most extreme (`id.n` argument)
-
-## a bad model [@Tiwari+2006]
-
-- this is based on a GLM, but the ideas are the same
-
-```{r turtles,echo=FALSE}
-dat <- read.csv("../data/dufemalepers.csv") ## get data
-dat <- transform(dat,
-                 tot=du+notdu,
-                 duprop=du/(du+notdu))
-m1 <- glm(cbind(notdu,du)~density-1,
-          subset=density>0,
-          family=quasibinomial(link="log"),
-          data=dat)
-oldpars <- par(mfrow=c(2,2),las=1,bty="l",mgp=c(2,1,0),
-              mar=c(4,3,1.2,1))
-plot(m1)
-newpars <- par(oldpars)
-```
-
-## original data/fit ...
-
-```{r turtle2,echo=FALSE}
-tmod <- glm(cbind(notdu,du)~density-1,
-          subset=density>0,
-          family=quasibinomial(link="log"),
-          data=dat)
-predframe <- data.frame(density=seq(0,0.18,by=0.001))
-pp <- predict(tmod,newdata=predframe,se.fit=TRUE)
-predframe$duprop <- 1-exp(pp$fit)
-predframe$low <- 1-exp(pp$fit+1.96*pp$se.fit)
-predframe$high <- 1-exp(pp$fit-1.96*pp$se.fit)
-ggplot(dat,aes(x=density,y=duprop))+
-    geom_point(aes(size=tot),alpha=0.7,colour="blue")+
-    geom_line(data=predframe)+
-    geom_ribbon(data=predframe,
-                  aes(ymin=low,ymax=high),
-                  colour=NA,alpha=0.2)
-```
-
-## Diagnostics
-
-- statisticians: "don't use p-values to evaluate LM assumptions"
-- everyone else: "so what should I do?"
-- statisticians: "look at pictures"
-- everyone else: "how do I decide whether to worry?"
-- statisticians: "..."
-
-## testing hypotheses and interpreting results
-
-- parameter-by-parameter: `summary()` ($t$ test)
-- multi-parameter comparisons: `anova()`, `car::Anova()` ($F$ test)
-- order matters
-- interactions/main effects matter
-
-# From LM to GLM
+# From Linear to generalized linear models
 
 ## Why GLMs?
 
-- assumptions of LMs do break down sometimes
+- assumptions of linear models do break down sometimes
 - count data: discrete, non-negative
 - proportion data: discrete counts, $0 \le x \le N$
 
@@ -356,7 +93,7 @@ ggplot(d,aes(x=v,y=n))+geom_point(size=5)+
 
 ## link functions
 
-- transform *prediction*, not response
+- these transform *prediction*, not response
 - e.g. rather than $\log(\mu) = \beta_0+\beta_1 x$,
 use $\mu = \exp(\beta_0+\beta_1 x)$
 - in this case log is the **link function**, exp is the **inverse link** function
@@ -368,14 +105,14 @@ use $\mu = \exp(\beta_0+\beta_1 x)$
 - typical defaults
      - Poisson: log (exponential)
      - binomial: logit/log-odds (logistic)
-
+	 - Gamma: should probably use `link="log"` rather than inverse (default)
+	 
 ## log link
 
 - proportional scaling of effects
 - small values of coefficients ($<0.1$) $\approx$ proportionality
 - otherwise change per unit is $\exp(\beta)$
 - large parameter values ($>10$) mean some kind of trouble
-
 
 ## logit link/logistic function
 
@@ -405,7 +142,7 @@ curve(qlogis(x),from=plogis(-4),to=plogis(4),xlab="x (probability)",ylab="logit(
 
 ## diagnostics
 
-- a little harder than linear models: `plot` is still somewhat useful
+- harder than linear models: `plot` is still somewhat useful
 - binary data especially hard (e.g. `arm::binnedplot`)
 - goodness of fit tests, $R^2$ etc. hard (can always compute `cor(observed,predict(model, type="response"))`)
 - residuals are *Pearson residuals* by default ($(\textrm{obs}-\textrm{exp})/V(\textrm{exp})$); predicted values are on the effect scale (e.g. log/logit) by default (use `type="response"` to get data-scale predictions)
@@ -414,8 +151,17 @@ curve(qlogis(x),from=plogis(-4),to=plogis(4),xlab="x (probability)",ylab="logit(
 ## overdispersion
 
 - too much variance
-- more detail later
 - should have residual df $\approx$ residual deviance
+- slightly better test: sum of squares of Pearson residuals $\sim \chi^2$
+- `aods3::gof()`
+- overdispersion < 1.05 (small); >5 maybe something wrong?
+
+## overdispersion: solutions
+
+- **quasilikelihood**: adjust standard errors, CIs, p-values
+     - Wald tests only (see below)
+- overdispersed distributions (e.g. negative binomial, beta-binomial)
+- observation-level random effects (later)
 
 ## back-transformation
 
@@ -440,18 +186,16 @@ like LMs, but:
 ## Common(est?) `glm()` problems
 
 - binomial/Poisson models with non-integer data
-- failing to specify `family` ($\to$ linear model);
+- failing to specify `family` (default Gaussian: $\to$ linear model);
 using `glm()` for linear models (unnecessary)
 - predictions on effect scale
-- using $(k,N)$ rather than $(k,N-k)$ in binomial models
+- using $(k,N)$ rather than $(k,N-k)$ with `family=binomial`
 - back-transforming SEs rather than CIs
-
 - neglecting overdispersion
 - Poisson for *underdispersed* responses
-- equating negative binomial with binomial rather than Poisson (
+- equating negative binomial with binomial rather than Poisson
 - worrying about overdispersion unnecessarily (binary/Gamma)
 - ignoring random effects
-
 
 # Example
 
@@ -463,6 +207,7 @@ knitr::opts_chunk$set(echo=TRUE)
 
 ```{r aids_ex_1,fig.width=10,fig.height=5}
 aids <- read.csv("../data/aids.csv")
+## set up time variable
 aids <- transform(aids, date=year+(quarter-1)/4)
 print(gg0 <- ggplot(aids,aes(date,cases))+geom_point())
 ```
@@ -480,6 +225,8 @@ print(gg1 <- gg0 + geom_smooth(method="glm",colour="red",
 g1 <- glm(cases~date,aids,family=quasipoisson(link="log"))
 summary(g1)
 ```
+
+Note `NA` value for AIC ...
 
 ## Diagnostics (`plot(g1)`)
 
@@ -527,6 +274,8 @@ par(op)  ## restore parameter settings
 ```{r acf2}
 acf(residuals(g2)) ## check autocorrelation
 ```
+
+Also see `nlme::ACF` for ACFs of grouped data ...
 
 ## References
 

@@ -9,12 +9,18 @@
 - temp repo for extras?
 - use allFit from package rather than source?
 
+
+intro
+
+tidyverse??
+
+
 GLMM overview:
 
 - check Fox chapter
 - formula first (not lin alg)
-   - random vs fixed
-   - simple vs complex
-   - nested vs crossed
-   - conditional, marginal, REML
+- random vs fixed
+- simple vs complex
+- nested vs crossed
+- conditional, marginal, REML
  

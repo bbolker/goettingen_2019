@@ -10,7 +10,7 @@ Licensed under the
 [Creative Commons attribution-noncommercial license](http://creativecommons.org/licenses/by-nc/3.0/).
 Please share \& remix noncommercially, mentioning its origin.
 
-```{r pkgs,echo=FALSE,message=FALSE}
+```{r pkgs,echo=FALSE,message=FALSE,warning=FALSE}
 library(ggplot2);theme_set(theme_bw())
 library(ggExtra)
 library(broom)
@@ -98,6 +98,24 @@ pander::pander(ftab,justify="left")
 
 Modified from: http://stats.stackexchange.com/questions/13166/rs-lmer-cheat-sheet?lq=1 (Livius)
 
+## Nested vs crossed designs
+
+Nested: sub-unit IDs only measured within a single larger unit.
+e.g.: Plot1 in Block1 independent of Plot1 in Block2
+
+![](pix/CV_nested.png)
+
+Crossed: sub-unit IDs can be measured in multiple larger units.
+e.g. year, site
+
+![](pix/CV_crossed.png)
+
+Unique coding: removes ambiguity
+
+![](pix/CV_unique.png)
+
+Robert Long, [Cross Validated](https://stats.stackexchange.com/questions/228800/crossed-vs-nested-random-effects-how-do-they-differ-and-how-are-they-specified)
+
 ## Formulas, interactions, nesting etc.
 
 `a*b` = main effects plus interaction, `a:b` = interaction only, `a/b` = `a` + `a:b`
@@ -117,6 +135,7 @@ Don't need explicit nesting if your sub-groups are uniquely labeled (i.e. `A1`, 
 - e.g. female rats exposed to different doses of radiation, multiple pups per mother, multiple measurements per pup (labeled by time). Maximal model ... ?
 
 Maximal model **often won't work**
+
 
 ## Random-slopes models: what does `(x|g)` really do?
 
@@ -163,7 +182,7 @@ FE describes overall trend, RE describes variation around the trend
 
 Essentially, because the *observed* among-group variation is less than the *expected* among-group variation (= $\sigma^2_{\mbox{among}} + \sigma^2_{\mbox{within}}/n$). More generally, because *some* dimension of the variance-covariance matrix has zero extent ...
 
-```{r singsims,echo=FALSE,fig.width=7,fig.height=4,cache=TRUE,message=FALSE}
+```{r singsims,echo=FALSE,fig.width=7,fig.height=4,cache=TRUE,message=FALSE,warning=FALSE}
 simfun <- function(n1=5,n2=5,sd1=1,sd2=1) {
   d <- expand.grid(f1=factor(seq(n1)),f2=factor(seq(n2)))
   u1 <- rnorm(n1,sd=sd1)
@@ -273,7 +292,7 @@ lattice::qqmath(m1,id=0.05)
 
 Or with `augment` and ggplot ...
 
-```{r diag,results="hide",fig.keep="none"}
+```{r diag,results="hide",fig.keep="none",message=FALSE}
 aa <- augment(m1)
 ## fitted vs resid
 ggplot(aa,aes(.fitted,.resid))+geom_point()+geom_smooth()
@@ -287,7 +306,7 @@ ggplot(aa)+stat_qq(aes(sample=.resid))
 
 - `tidy`: get coefficient values
     - `effects="fixed"`
-    - `effects="ran_vars"`
+    - `effects="ran_pars"`
 	- `effects="ran_vals"`
 	- `effects="ran_coefs"`
 - `glance`: get model summaries
@@ -383,7 +402,9 @@ Very slow!
 
 ## Inference: CIs on predictions etc.
 
-```{r eval=FALSE}
+In general it's not as easy as one might like to get confidence intervals on predictions. *If* we ignore the effects of uncertainty in the random effects, then it can be done using the formula $\sigma^2 = \textrm{Diag}\left(X V X^\top\right)$
+
+```{r pred_CI,eval=FALSE}
 mm <- model.matrix(terms(fitted_model),newdat)
 se_pred <- sqrt(diag(mm %*% tcrossprod(vcov(fitted_model),mm)))
 ```

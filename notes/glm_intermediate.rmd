@@ -51,7 +51,7 @@ aods3::gof(ticks_glm1)
 - multiply estimated standard errors by $\sqrt{phi}$
 - recompute $Z$/$t$ statistics, $p$ values
 - `family=quasipoisson` or `family=quasibinomial` does this automatically
-- no likelihood/AIC available
+- quasilikelihood/quasiAIC? Depends who you ask.
 
 ## ticks
 
@@ -68,7 +68,11 @@ summary(ticks_QP)
 
 ```{r tick_cp}
 ticks_NB <- MASS::glm.nb(TICKS~scHEIGHT*YEAR,data=ticks)
+
 summary(ticks_NB)
+## or:
+library(glmmTMB)
+glmmTMB(TICKS~scHEIGHT*YEAR,data=ticks,family=nbinom2)
 ```
 
 ## observation-level random effects
@@ -91,7 +95,14 @@ dwplot(list(OR=ticks_OR,NB=ticks_NB,glm1=ticks_glm1,QP=ticks_QP))
 
 ## offsets
 
-- account
+- account for differences in sampling effort, exposure
+- count data: typically `log(effort)`, `log(area)` etc.
+- `y ~ x + offset(log(e))`: $\exp(\log(y)) = \exp(\beta_0 + \beta_1 x + \log(e))$ or
+$$
+y = \exp(\beta_0 + \beta_1 x) \cdot \exp(\log(e)) = e \cdot \exp(\beta_0 + \beta_1 x)
+$$
+- predictions are for 1 unit of effort/area
+- for mortality risk: $\log(t)$ on *complementary log-log link* scale (see [here](https://rpubs.com/bbolker/logregexp))
 
 ## complete separation
 

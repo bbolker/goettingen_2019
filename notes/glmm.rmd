@@ -288,7 +288,31 @@ source("../R/demog_mort_funs.R")
 plotfun(j.red2,m.acr.nofr,drop.cols=c(4,8))
 ```
 
-## Technical definition
+## Simple mixed models (scalar, intercept-only)
+
+$$
+\begin{split}
+y_{ij} & = \beta_0 + \beta_1 x_{ij} + \epsilon_{0,ij} + \epsilon_{1,j} \\
+& = (\beta_0 + \epsilon_{1,j}) + \beta_1 x_{ij} \\
+\epsilon_{0,ij} & \sim \textrm{Normal}(0,\sigma_0^2) \\
+\epsilon_{1,j} & \sim \textrm{Normal}(0,\sigma_0^2)
+\end{split}
+$$
+
+## Random-slopes model (scalar, intercept-only)
+
+$$
+\begin{split}
+y_{ij} & = \beta_0 + \beta_1 x_{ij} + \epsilon_{0,ij} + \epsilon_{1,j} +
+\epsilon_{2,j} x_{ij} \\
+& = (\beta_0 + \epsilon_{1,j}) + (\beta_1 + \epsilon_{2,j} x_{ij})  \\
+\epsilon_{0,ij} & \sim \textrm{Normal}(0,\sigma_0^2) \\
+\{\epsilon_{1,j}, \epsilon_{2,j}\} & \sim \textrm{MVN}(0,\Sigma)
+\end{split}
+$$
+
+
+## General definition
 
 $$
 \begin{split}
