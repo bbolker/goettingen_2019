@@ -200,6 +200,19 @@ brms1 <- brm(stmass~mnth*roostsitu+(1|subject),
 print(brms1)
 ```
 
+## with tmbstan
+
+The `tmbstan` package allows us to use Hamiltonian MC
+
+```{r tmbstan,message=FALSE,eval=FALSE}
+library(glmmTMB)
+library(tmbstan)
+glmmTMB1 <- glmmTMB(stmass~mnth*roostsitu+(1|subject),data=dataf,
+                    REML=FALSE)
+glmmTMB_mcmc <- tmbstan(glmmTMB1$obj)
+broom.mixed::tidy(glmmTMB_mcmc)
+```
+
 ---
 
 ## Histograms vs densities of posterior distributions

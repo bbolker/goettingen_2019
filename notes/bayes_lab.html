@@ -11,7 +11,7 @@
 
 <meta name="author" content="Ben Bolker" />
 
-<meta name="date" content="2019-01-25" />
+<meta name="date" content="2019-01-26" />
 
 <title>Bayesian lab</title>
 
@@ -187,7 +187,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Bayesian lab</h1>
 <h4 class="author"><em>Ben Bolker</em></h4>
-<h4 class="date"><em>25 January 2019</em></h4>
+<h4 class="date"><em>26 January 2019</em></h4>
 
 </div>
 
@@ -446,6 +446,16 @@ xyplot(mm)</code></pre>
 ## Samples were drawn using sampling(NUTS). For each parameter, Eff.Sample 
 ## is a crude measure of effective sample size, and Rhat is the potential 
 ## scale reduction factor on split chains (at convergence, Rhat = 1).</code></pre>
+</div>
+<div id="with-tmbstan" class="section level2">
+<h2>with tmbstan</h2>
+<p>The <code>tmbstan</code> package allows us to use Hamiltonian MC</p>
+<pre class="r"><code>library(glmmTMB)
+library(tmbstan)
+glmmTMB1 &lt;- glmmTMB(stmass~mnth*roostsitu+(1|subject),data=dataf,
+                    REML=FALSE)
+glmmTMB_mcmc &lt;- tmbstan(glmmTMB1$obj)
+broom.mixed::tidy(glmmTMB_mcmc)</code></pre>
 <hr />
 </div>
 <div id="histograms-vs-densities-of-posterior-distributions" class="section level2">

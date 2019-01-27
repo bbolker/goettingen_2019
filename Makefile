@@ -1,6 +1,6 @@
 SRCDIR=..
 
-notes += modeling_inference glm_basic glm_intermediate glmm datavis bayes bayeslab mixed_details mixedlab glmm_details glmmlab addons
+notes += modeling_inference glm_basic glm_intermediate glmm datavis bayes bayes_lab mixed_details mixed_lab glmm_details glmm_lab addons
 
 nnhtml := $(notes:%=notes/%.html)
 nnrmd := $(notes:%=notes/%.rmd)
@@ -12,6 +12,8 @@ Rfiles += geom_cstar.R calcDenDF.R allFit.R
 
 dd := $(Datasets:%=data/%)
 rr := $(Rfiles:%=R/%)
+
+datasets.html: ../datasets.csv
 
 ## syllabus.html 
 all: glmm_data.zip setup.html schedule.html datasets.html ${nnhtml} ${nnrmd} ${nnslides} ${rr}

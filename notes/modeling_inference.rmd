@@ -138,6 +138,8 @@ Why does weather not seem to have an effect???
 
 ![](pix/bias_variance.png)
 
+Figure 2.9, @james_introduction_2013
+
 ## what about machine learning?
 
 - *shrinkage methods*: e.g. penalized regression (ridge, lasso)
