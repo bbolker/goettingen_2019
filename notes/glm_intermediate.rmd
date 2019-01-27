@@ -123,7 +123,7 @@ $$
 
 # zero-inflation
 
-## zero-inflation
+## zero-inflation [@martin_zero_2005]
 
 - *too many* zeros
 - "lots of zeros" can occur just because of low mean
@@ -135,7 +135,7 @@ $$
 (**not** "true" and "false")
 - *hurdle*: zeros plus truncated distribution
 - choice depends on meaning of zeros  
-- Z-I as well as conditional mean may be modeled
+- Z-I as well as conditional mean may be modeled (e.g. `glmmTMB`)
 
 ## testing for zero-inflation
 
@@ -174,16 +174,44 @@ points(obs_zeros,0,col="red",pch=16)
 
 ## Gamma
 
-## complementary log-log
+- useful
+- simply log-transforming may be easier: log-Normal very similar to Gamma in some ways
+- choose based on interpretation; behaviour near zero; tail behaviour
+
+```{r denscmp,echo=FALSE,fig.width=8}
+par(mfrow=c(1,2),las=1,bty="l")
+curve(dgamma(x,shape=0.2,scale=5),from=0,to=3,n=501,
+      ylab="density")
+curve(dlnorm(x,meanlog=0,sdlog=3),add=TRUE,col=2,lty=2,n=501)
+legend("topright",c("Gamma","log-Normal"),col=1:2,lty=1:2)
+curve(dgamma(x,shape=0.2,scale=5),from=0.001,to=10,n=501,
+      ylab="density",log="xy")
+curve(dlnorm(x,meanlog=0,sdlog=3),add=TRUE,col=2,lty=2,n=501)
+```
+
+## complementary log-log link
+
+- useful for discrete-time survival analysis
+- parameters on the *log-hazard* scale
 
 # beyond the exponential family
 
 ## beta regression
 
 - GLMs require counts (denominators), e.g. 40% = 4/10
-- what if data don't have obvious denominators
+- what if data don't have obvious denominators?
 - e.g. cover scores, activity budgets
-- *Beta distribution*
+- *Beta distribution*: `betareg`, `glmmTMB`, `brms`
 
 ## negative binomial regression
 
+- for overdispersion
+- standard NB ("NB2"): Gamma+Poisson, variance = $\mu(1+\mu/k)$, $k >0$
+- NB1: variance=$\mu \phi$, $\phi>1$
+
+## others ...
+
+- beta-binomial (overdispersed binomial)
+- Tweedie (zeros + continuous)
+- COM-Poisson, generalized Poisson [@lynch_dealing_2014]
+- ordinal models (`MASS::polr`, `ordinal` package)
