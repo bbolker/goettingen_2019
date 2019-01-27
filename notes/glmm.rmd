@@ -288,7 +288,7 @@ source("../R/demog_mort_funs.R")
 plotfun(j.red2,m.acr.nofr,drop.cols=c(4,8))
 ```
 
-## Simple mixed models (scalar, intercept-only)
+## Simple mixed models<br>(scalar, intercept-only)
 
 $$
 \begin{split}
@@ -299,7 +299,10 @@ y_{ij} & = \beta_0 + \beta_1 x_{ij} + \epsilon_{0,ij} + \epsilon_{1,j} \\
 \end{split}
 $$
 
-## Random-slopes model (scalar, intercept-only)
+Could have multiple, possibly nested levels of random effects
+(genotype within population within region ...)
+
+## Random-slopes model
 
 $$
 \begin{split}
@@ -373,7 +376,9 @@ See also @Crawley2002; @gelman_analysis_2005
 ## Avoiding MM
 
 * average: for *nested* LMMs (when uninterested in within-group variation) [@murtaugh_simplicity_2007] 
-* use fixed effects (or two-stage models) instead of random effects when (1) samples per block are large (shrinkage will be unimportant) or (2) number of samples is small (you will save few degrees of freedom, and variance estimates are likely to be bad anyway)
+* use fixed effects (or two-stage models) instead of random effects when
+     * many samples per block (shrinkage unimportant)
+     * few blocks (little advantage; bad variance estimates)
 
 Estimation
 ==========

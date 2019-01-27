@@ -350,7 +350,7 @@ e.g. Normal vs. $t$
 - termwise tests: `car::Anova`, `afex::anova`
 - contrasts/effects/post-hoc tests: `emmeans`, `effects` packages
 
-```{r anova,results="hide"}
+```{r anova,results="hide",message=FALSE}
 car::Anova(m1)
 ```
 
@@ -359,7 +359,7 @@ car::Anova(m1)
 - level-counting: `R/calcDenDF.R`
 - `lmerTest`/`afex`; Satterthwaite, Kenward-Roger
 
-```{r}
+```{r lmerTest, message=FALSE}
 library(lmerTest)
 summary(as_lmerModLmerTest(m1))
 summary(as_lmerModLmerTest(m1),ddf="Kenward-Roger")

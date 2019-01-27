@@ -161,7 +161,7 @@ ggplotly(g6)
 
 ## exercise
 
-Pick a grouped data set of your own. 
+Pick a data set from the list available on the web page (or use your own) and create two plots that indicate the grouping in different ways.
 
 ```{r sessioninfo,eval=FALSE,echo=FALSE}
 sessionInfo()

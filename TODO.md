@@ -10,17 +10,10 @@
 - use allFit from package rather than source?
 
 
-intro
-
 tidyverse??
 
-
-GLMM overview:
-
-- check Fox chapter
-- formula first (not lin alg)
-- random vs fixed
-- simple vs complex
-- nested vs crossed
-- conditional, marginal, REML
- 
+* more on REML
+* more on troubleshooting convergence problems
+* repo?  fix up
+* exercises!
+* clean up data? use rds/csv, read automatically and get obs/group numbers?
