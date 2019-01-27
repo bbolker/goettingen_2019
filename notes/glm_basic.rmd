@@ -135,9 +135,9 @@ curve(qlogis(x),from=plogis(-4),to=plogis(4),xlab="x (probability)",ylab="logit(
 
 - for Poisson, Bernoulli responses we only need one piece of information
 - how do we specify denominator ($N$ in $k/N$)?
-- traditional R: response is two-column matrix `cbind(k,N-k)` **not** `cbind(k,N)`
-- also allowed: response is proportion ($k/N$), also specify `weights=N`
-- if equal for all cases and specified on the fly need to replicate:  
+     - traditional R: response is two-column matrix of successes and failures [`cbind(k,N-k)` **not** `cbind(k,N)`]
+     - also allowed: response is proportion ($k/N$), also specify `weights=N`
+     - if equal for all cases and specified on the fly need to replicate:  
 `glm(p~...,data,weights=rep(N,nrow(data)))`
 
 ## diagnostics
@@ -148,9 +148,16 @@ curve(qlogis(x),from=plogis(-4),to=plogis(4),xlab="x (probability)",ylab="logit(
 - residuals are *Pearson residuals* by default ($(\textrm{obs}-\textrm{exp})/V(\textrm{exp})$); predicted values are on the effect scale (e.g. log/logit) by default (use `type="response"` to get data-scale predictions)
 - also see `DHARMa` package
 
+## what to do about problems
+
+- consider problems *in order*: bias > heterosced. > outliers > distribution > overdisp.
+- bias: add covariates? polynomial or spline (GAM) predictors? change link function?
+- heteroscedasticity: change variance relationship? (NB1 vs NB2)
+- outliers: drop outliers? robust methods?
+
 ## overdispersion
 
-- too much variance
+- too much variance (after fixing other problems)
 - should have residual df $\approx$ residual deviance
 - slightly better test: sum of squares of Pearson residuals $\sim \chi^2$
 - `aods3::gof()`
@@ -240,6 +247,9 @@ par(op)  ## restore parameter settings
 acf(residuals(g1)) ## check autocorrelation
 ```
 
+## Diagnostics: the Big Lie
+
+
 ## ggplot: check out quadratic model
 
 ```{r ggplot2,fig.width=10,fig.height=5}
@@ -276,6 +286,17 @@ acf(residuals(g2)) ## check autocorrelation
 ```
 
 Also see `nlme::ACF` for ACFs of grouped data ...
+
+## exercise
+
+- pick a data set (from the [course data sets](../data/datasets.html) if you like; OK to ignore grouping/clustering for now)
+- decide on a family and set of predictors
+- decide on predictors
+- fit a model
+- look at diagnostics
+- fix the problems?
+
+What did you learn? Where did you get stuck?
 
 ## References
 
