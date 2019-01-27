@@ -13,7 +13,6 @@ Rfiles += geom_cstar.R calcDenDF.R allFit.R
 dd := $(Datasets:%=data/%)
 rr := $(Rfiles:%=R/%)
 
-datasets.html: ../datasets.csv
 
 ## syllabus.html 
 all: glmm_data.zip setup.html schedule.html datasets.html ${nnhtml} ${nnrmd} ${nnslides} ${rr}
@@ -42,3 +41,4 @@ notes/%.pdf: ${SRCDIR}/notes/%.rmd
 glmm_data.zip: 
 	cd ..; zip gh-pages/glmm_data.zip ${dd}
 
+datasets.html: ../datasets.csv ../datasets.rmd
