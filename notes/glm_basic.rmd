@@ -87,7 +87,7 @@ ggplot(d,aes(x=v,y=n))+geom_point(size=5)+
 - family: what kind of data do I have?
     - from **first principles**: family specifies the relationship between the mean and variance
 	- binomial: proportions, out of a total number of counts; includes binary (Bernoulli) ("logistic regression")
-	- Poisson (independent counts, no set maximum, or far from the maximum)
+	- Poisson (independent counts, no maximum, or far from the maximum)
 	- other (Normal (`"gaussian"`), Gamma)
 - default family for `glm` is Gaussian
 
