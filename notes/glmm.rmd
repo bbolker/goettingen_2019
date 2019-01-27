@@ -610,6 +610,18 @@ approximation for GLM(M)s
 -   Model diagnosis
 -   Confidence intervals accounting for uncertainty in variances
 
+## The need for speed [@brooks_modeling_2017]
+
+<!-- https://tex.stackexchange.com/questions/250623/how-to-generate-a-4-up-table-of-images-with-pandoc -->
+
+
+![](pix/bigfit2.png)
+
+## more speed
+
+![](pix/bigfit1.png)
+ 
+
 ## Spatial and temporal correlations
 
 -   Sometimes blocking takes care of non-independence ...
@@ -635,6 +647,8 @@ approximation for GLM(M)s
 - <https://bbolker.github.io/mixedmodels-misc/ecostats_chap.html>
 -  @bolker_glmm_2014
 
-![image](pix/foxbook.png)
+<img src="pix/foxbook.png" height="100">
 
 (code ASPROMP8)
+
+## references  {.refs}

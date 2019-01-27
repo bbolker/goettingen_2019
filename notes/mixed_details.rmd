@@ -262,12 +262,33 @@ $\rho$ must be >0)
 - RE "nested within" FE, e.g. if not enough groups at the top level;
 `y ~ g1 + (1|g1:g2)`; *more* parameters but fixed rather than random
 
+## Convergence failures ![](pix/skullcross_tiny.png)
+
+- convergence failures are common
+- what do they really mean? how to fix them? when can they be ignored?
+- **approximate** test that gradient=0 and curvature is correct
+- scale and center predictors; simplify model
+- use `?allFit` to see whether different optimizers give sufficiently similar answers
+     - `$fixef`, etc.: are answers sufficiently similar?
+     - `$llik`: how similar is goodness-of-fit?
+
+```{r allFit_ex, cache=TRUE}
+m1 <- lmer(Reaction ~ Days + (Days|Subject), sleepstudy)
+aa <- allFit(m1)
+ss <- summary(aa)
+names(ss)
+ss$fixef
+```
+
+- can be run in parallel
+
 ## Restricted maximum likelihood (REML)
 
 - reduce bias in estimated variances and covariances
 - similar to dividing by $n-1$ instead of $n$ when computing sample variances
-- example: paired $t$-test
-- works by 
+- e.g. estimate of variance in paired data
+    - find *difference* of each pair, mean and variance of differences
+- works *either* by scaling out fixed effects (LMM) *or* by integrating over uncertainty of fixed parameters (GLMM/`glmmTMB`)
 
 ## Fit model
 
