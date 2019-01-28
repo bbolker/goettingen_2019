@@ -96,7 +96,7 @@ ftab$formula[ff] <- sprintf("`%s`",ftab$formula[ff])
 pander::pander(ftab,justify="left")
 ```
 
-Modified from: http://stats.stackexchange.com/questions/13166/rs-lmer-cheat-sheet?lq=1 (Livius)
+Modified from: http://stats.stackexchange.com/questions/13166/rs-lmer-cheat-sheet?lq=1 (Livius). Subscripts $\{S,I\}$ refer to Subject vs Item effects. Lower-case $\{s,i\}$ indicate particular subjects/items. $\{0,1\}$ refer to intercept vs slope effects.
 
 ## Nested vs crossed designs
 
@@ -126,6 +126,30 @@ Robert Long, [Cross Validated](https://stats.stackexchange.com/questions/228800/
 
 Don't need explicit nesting if your sub-groups are uniquely labeled (i.e. `A1`, `A2`, ..., `B1`, `B2`, ...)
 
+## Factors varying across groups
+
+These can be difficult, because they generate large variance-covariance matrices. E.g for a four-level factor, R parameterizes the model as $\beta_0$ (intercept), $\beta_1$ (level 2 - level 1), $\beta_2$ (level 3 - level 1), $\beta_3$ (level 4 - level 1). This gives us
+
+$$
+(\textrm{intercept}, \textrm{slope}) =
+\textrm{MVN}\left(\boldsymbol 0,
+\left[
+\begin{array}{cccc}
+\sigma^2_{\{b|1\}}  & . & . & . \\
+\sigma_{\{b|1\},\{b|a_{21}\}} &
+\sigma^2_{\{b|a_{21}\}} & . & .  \\
+\sigma_{\{b|1\},     \{b|a_{31}\}} &
+\sigma_{\{b|a_{21}\},\{b|a_{31}\}} &
+\sigma^2_{\{b|a_{31}\}} & . \\
+\sigma_{\{b|1\}     ,\{b|a_{41}\}} &
+\sigma_{\{b|a_{21}\},\{b|a_{41}\}} &
+\sigma_{\{b|a_{31}\},\{b|a_{41}\}} &
+\sigma^2_{\{b|a_{41}\}} 
+\end{array}
+\right]
+\right)
+$$
+
 ## What is the maximal model?
 
 - Which effects vary *within* which groups?
@@ -136,6 +160,9 @@ Don't need explicit nesting if your sub-groups are uniquely labeled (i.e. `A1`, 
 
 Maximal model **often won't work**
 
+e.g.
+
+- *Culcita* (coral-reef) example: randomized-block design, so each treatment (none/crabs/shrimp/both) is repeated in every block; thus `(treat|block)`
 
 ## Random-slopes models: what does `(x|g)` really do?
 
@@ -272,7 +299,7 @@ $\rho$ must be >0)
      - `$fixef`, etc.: are answers sufficiently similar?
      - `$llik`: how similar is goodness-of-fit?
 
-```{r allFit_ex, cache=TRUE}
+```{r allFit_ex, cache=TRUE, message=FALSE}
 m1 <- lmer(Reaction ~ Days + (Days|Subject), sleepstudy)
 aa <- allFit(m1)
 ss <- summary(aa)
@@ -280,7 +307,12 @@ names(ss)
 ss$fixef
 ```
 
-- can be run in parallel
+```{r allFit_more}
+ss$sdcor
+ss$llik-min(ss$llik)
+```
+
+- `allFit` can be run in parallel
 
 ## Restricted maximum likelihood (REML)
 
@@ -289,6 +321,9 @@ ss$fixef
 - e.g. estimate of variance in paired data
     - find *difference* of each pair, mean and variance of differences
 - works *either* by scaling out fixed effects (LMM) *or* by integrating over uncertainty of fixed parameters (GLMM/`glmmTMB`)
+- less important than people think
+- **don't** compare REML-fitted models with different fixed effects  
+(`lme4` will try to prevent this ...)
 
 ## Fit model
 
@@ -401,10 +436,11 @@ confint(m1)
 
 What took so long?
 
-```{r prof,cache=TRUE,echo=FALSE}
+```{r prof,cache=TRUE,echo=FALSE,fig.width=10}
 pp <- as.data.frame(profile(m1,signames=FALSE))
 ggplot(pp,aes(.focal,.zeta^2))+geom_point()+geom_line()+
-    facet_wrap(~.par,scale="free_x")
+    facet_wrap(~.par,scale="free_x")+
+    labs(x="",y="negative log-likelihood")
 ```
 
 ## Inference: parametric bootstrap
