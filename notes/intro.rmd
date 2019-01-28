@@ -6,4 +6,6 @@ date: "`r format(Sys.time(), '%H:%M %d %B %Y')`"
 
 - introductions
 - course material: https://github.com/bbolker/goettingen_2019 and https://bbolker.github.io/goettingen_2019
+- data sets
 - please ask questions!
+

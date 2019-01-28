@@ -74,7 +74,7 @@ Visual perception of quantitative information: [Cleveland hierarchy](http://proc
 -   first two show up as (e.g.) `ggplot(my_data,aes(x=age,y=rootgrowth,colour=phosphate))`
 -   **geoms**:
    - simple: `geom_point`, `geom_line`
-```{r ex,fig.keep="none"}
+```{r ex,fig.keep="none", message=FALSE}
 load("../data/gopherdat2.RData")
 library("ggplot2"); theme_set(theme_bw())
 (ggplot(Gdat,aes(x=year,y=shells/Area,colour=Site))
