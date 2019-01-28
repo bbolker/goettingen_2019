@@ -14,12 +14,17 @@ tidyverse??
 
 * GLMM intro
     * pictures of X, Z for random-int, random-slopes models?
-    * scaling picture from glmmTMB paper?
 	* fix stier fig (tidy?)
 * GLMM details
     * more on REML
     * more on troubleshooting convergence problems
-* logistics
+	* glmmTMB tables?
+* effect sizes
+* find/update/post Banta example? (ecostats chapter?)
+	
 * repo?  fix up
 * exercises!
 * clean up data? use rds/csv, read automatically and get obs/group numbers?
+
+====
+
