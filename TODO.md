@@ -1,4 +1,5 @@
 
+
 - schedule
     - Monday: intro/overview; data viz (?); philosophy/inference (?); GLM overview/reminder; mixed models intro
     - Tuesday: mixed model nuts and bolts
@@ -27,5 +28,12 @@ tidyverse??
 * clean up data? use rds/csv, read automatically and get obs/group numbers?
 * allFit: return SEs of fixed effects? plot method???
 
+* auto-scaling/centering of variables
+* links to: ISEC talk, rpubs simulations, simulation packages
+
 ====
+
+effect sizes
+predictions with confidence intervals
+graphical presentation
 
