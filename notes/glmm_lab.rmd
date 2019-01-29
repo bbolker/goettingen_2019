@@ -117,8 +117,6 @@ The simplified (CS) model works fine in this example - but is equivalent (in thi
 
 ## gopher tortoise data
 
-
-
 ```{r g1}
 load("../data/gopherdat2.RData")
 Gdat$obs <- factor(seq(nrow(Gdat)))

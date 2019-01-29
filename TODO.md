@@ -25,6 +25,7 @@ tidyverse??
 * repo?  fix up
 * exercises!
 * clean up data? use rds/csv, read automatically and get obs/group numbers?
+* allFit: return SEs of fixed effects? plot method???
 
 ====
 

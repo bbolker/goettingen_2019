@@ -76,7 +76,8 @@ g4 <- MASS:::glmmPQL(incidence/size ~ period,
                      random = ~1|herd,
                      data=cbpp,
                      family=binomial,
-                     weights=size)
+                     weights=size,
+                     verbose=FALSE)
 dwplot(list(Laplace=g1,AGQ5=g2,AGQ10=g3,glmmPQL=g4))
 ```      
       
@@ -89,6 +90,10 @@ e.g. Poisson, binomial ($N>1$)
 - e.g. `aods3::gof()`
 - observation-level random effects
 
+```{r aods}
+aods3::gof(g1)
+```
+
 ## dealing with overdispersion
 
 - quasi-likelihood
@@ -97,18 +102,45 @@ e.g. Poisson, binomial ($N>1$)
 (negative binomial, beta-binomial, etc.)  
 `glmmTMB`/`brms` [@brooks_modeling_2017]
 
+```{r}
+library(glmmTMB)
+g5 <- glmmTMB(incidence/size ~ period + (1|herd),
+              family=binomial,
+              data=cbpp,
+              weights=size)
+g6 <- update(g5, family=betabinomial)
+```
+
+```{r}
+dotwhisker::dwplot(list(lme4=g1,glmmTMB=g5,glmmTMB_BB=g6),
+                   effects="fixed")+
+    geom_vline(xintercept=0,linetype=2)
+```
+
 ## other diagnostics
 
 - assumption of Normal residuals may not be very good
 - simulated residuals (`DHARMa`)
+
+```{r message=FALSE,results="hide"}
+DHARMa::simulateResiduals(g1,plot=TRUE)
+```
 
 ## zero-inflation
 
 - `glmmTMB` etc.
 - Owls example
 
-## Complete separation
+```{r zi}
+zipm3 <- glmmTMB(count~spp * mined + (1|site),
+                ziformula=~spp * mined,
+                Salamanders, family="poisson")
+## can even include random effects in zero-inflation model!
+zipm4 <- update(zipm3, ziformula = ~spp*mined+(1|site))
+zipm5 <- update(zipm3, ziformula = ~(1|site))
 
-- penalized regression
-- add priors!
+library(bbmle)
+AICtab(zipm3,zipm4,zipm5)
+```
+
 

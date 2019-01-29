@@ -23,16 +23,8 @@ knit_hooks$set(basefig=function(before, options, envir) {
                })
 ```
 
-![cc](pix/cc-attrib-nc.png)
-<!---
-(http://i.creativecommons.org/l/by-nc-sa/3.0/88x31.png)
---->
-Licensed under the 
-[Creative Commons attribution-noncommercial license](http://creativecommons.org/licenses/by-nc-sa/2.5/ca/).
-Please share \& remix noncommercially, mentioning its origin.
-
 Load packages:
-```{r pkgs}
+```{r pkgs, warning=FALSE}
 ## modeling packages
 library("lme4")     ## basic (G)LMMs
 library("nlme")     ## more LMMs
@@ -216,6 +208,7 @@ dotplot(ranef(lmer2,condVar=TRUE))
 Or with `tidy` + `ggplot`:
 ```{r ranef2}
 tt <- tidy(lmer2,effects="ran_vals")
+tt <- transform(tt,level=reorder(level,estimate))
 ggplot(tt,aes(level,estimate))+
     geom_pointrange(aes(ymin=estimate-1.96*std.error,
                         ymax=estimate+1.96*std.error))+
@@ -237,10 +230,10 @@ function of the fitted values and as a function of particularly important predic
 
 ## Inference
 
-One good way to assess the results of a model fit is to look at a coefficient plot:
+One good way to assess the results of a model fit is to look at a coefficient plot: `dotwhisker::dwplot()` does this. *Note that it automatically scales all coefficients by 2SD; use `by_2sd=FALSE` to leave coefficients unscaled*
 
 ```{r coefplot}
-dwplot(lmer2)+geom_vline(xintercept=0,lty=2)
+dotwhisker::dwplot(lmer2)+geom_vline(xintercept=0,lty=2)
 ```
 
 (Note that the intercept is automatically dropped; this is usually the right choice. Use `show_intercept=TRUE` to have the intercept included.) For more complicated coefficient plots, you can use the combination of the `broom.mixed` package to get the parameters in a useful form and `dwplot` to draw the plot.
@@ -299,7 +292,7 @@ detach("package:lmerTest")
 ```
 Capturing just the coefficient table from `summary(lmer2R)`:
 ```{r lmer2Rsum_out,echo=FALSE}
-s1 <- summary(lmer2R,digits=3,ddf="Satterthwaite")
+s1 <- summary(lmer2R,ddf="Satterthwaite")
 lmer2Rout <- capture.output(s1)
 cat(lmer2Rout[18:27],sep="\n")
 ```
@@ -307,6 +300,12 @@ By default `lmerTest` uses the Satterthwaite approximation to the
 degrees of freedom.  You can also use `summary(lmer2R,ddf="Kenward-Roger")`
 to get a slightly more accurate (and slower) estimate, but in this case
 the answers are basically identical.
+
+Can use the algorithm that `lme` uses:
+```{r calcDenDF}
+source("../R/calcDenDF.R")
+calcDenDF(~mnth*roostsitu,data=dataf,random=~1|subject)
+```
 
 We conclude that the interactions are not doing much,
 but there's definitely an effect of the roosts and months.
@@ -317,7 +316,6 @@ Here are the type II (sequential) ANOVA results:
 ```{r anovalme2}
 anova(lmer2)
 ```
-`lmer` doesn't give denominator degrees of freedom ...
 
 If we want to evaluate the *marginal* sums of squares, i.e. dropping one term at a time from the model, when there are interactions,
 we usually want to change the model to use sum-to-zero contrasts: 
@@ -437,6 +435,10 @@ g0 +   geom_line(colour="gray",aes(y=pred1,group=subject)) +
 ```
 
 There is so much shrinkage (the among-individual variance is very small) that we can barely see the individual-level predictions (gray lines) behind the population-level predictions (red lines).
+
+```{r}
+VarCorr(lmer2)
+```
 
 Unfortunately computing confidence intervals for the predictions is a little tricky: again, there is some code on the [GLMM FAQ](https://bbolker.github.io/mixedmodels-misc/glmmFAQ.html) for this.
 
