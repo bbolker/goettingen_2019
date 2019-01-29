@@ -29,11 +29,12 @@ tidyverse??
 * allFit: return SEs of fixed effects? plot method???
 
 * auto-scaling/centering of variables
-* links to: ISEC talk, rpubs simulations, simulation packages
+* piecewise package problems
 
 ====
 
-effect sizes
 predictions with confidence intervals
 graphical presentation
+  dotwhisker::dwplot
 
+inference??

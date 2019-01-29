@@ -10,7 +10,7 @@ Licensed under the
 [Creative Commons attribution-noncommercial license](http://creativecommons.org/licenses/by-nc/3.0/).
 Please share \& remix noncommercially, mentioning its origin.
 
-```{r pkgs,message=FALSE}
+```{r pkgs,message=FALSE,warning=FALSE}
 library(MCMCglmm)
 library(lme4)
 library(brms)
@@ -20,6 +20,7 @@ library(reshape2) ## for melt()
 ## devtools::install_github("mjskay/tidybayes")
 ## library(tidybayes) ## optional
 library(ggplot2); theme_set(theme_bw())
+library(bayesplot)
 ```
 
 ```{r data}
@@ -43,6 +44,7 @@ dd <- as.data.frame(pp)
 ggplot(dd,aes(.focal,.zeta^2+1e-4))+geom_point(alpha=0.2)+geom_line()+
     facet_wrap(~.par,scale="free")+
     scale_y_log10()+
+    labs(x="",y="negative log-likelihood\n[diff from min]")+
     geom_hline(yintercept=qchisq(0.95,1),colour="red")+
     geom_hline(yintercept=qchisq(0.5,1),colour="red",linetype=2)
 ```
@@ -158,10 +160,12 @@ densityplot(
 
 The pathologies of the mathematically convenient conjugate (inverse-gamma/inverse-Wishart) priors can be overcome in `MCMCglmm` by changing to what are called *parameter-expanded priors* (see Section 8.0.2 in the "CourseNotes" vignette of the `MCMCglmm` package: `vignette("CourseNotes",package="MCMCglmm")` or [here](https://cran.r-project.org/web/packages/MCMCglmm/vignettes/CourseNotes.pdf). This is mathematically a bit complicated, but practically it boils down to specifying four parameters (`V`, `nu`, `alpha.mu`, and `alpha.mu`) instead of two. The good news is that you can generally set `V=1` and `alpha.mu=0`, which leaves only two to choose from. `alpha.V` gives the expected variance (so `sqrt(alpha.V)` is the expected standard deviation), and `nu` is now equivalent to the degrees of freedom for a $t$-distribution.
 Setting `V=1, nu=nu, alpha.mu = 0, alpha.V=s^2` gives a half-$t$ distribution
-with standard deviation `s` and df `nu`, e.g.:
+with standard deviation `s` and df `nu`, e.g. for `nu=1`, `s=25`:
 
 ```{r parcurve}
-curve(dt(x/25,df=1),from=0,to=500,ylim=c(0,0.35))
+par(las=1,bty="l")
+curve(dt(x/25,df=1),from=0,to=500,ylim=c(0,0.35),
+      ylab="prob density")
 abline(h=0,lty=2)
 ```
 
@@ -190,19 +194,26 @@ densityplot(mm)
 
 ## with brms
 
-```{r brmsfit, cache=TRUE}
+```{r brmsfit, eval=FALSE, results="hide"}
 brms1 <- brm(stmass~mnth*roostsitu+(1|subject),
              family=gaussian,
              data=dataf)
+saveRDS(brms1,file="brms1.rds")
 ```
 
-```{r print_brms}
+```{r print_brms,eval=FALSE}
+brms1 <- readRDS("brms1.rds")
 print(brms1)
+plot(brms1)
+library(shinystan)
+launch_shinystan(as.shinystan(brms1$fit))
 ```
+
+Diagnostics with `bayesplot` or `shinystan` packages ...
 
 ## with tmbstan
 
-The `tmbstan` package allows us to use Hamiltonian MC
+The `tmbstan` package allows us to use Hamiltonian MC on a fitted `glmmTMB` model (but not to set priors ... yet ...)
 
 ```{r tmbstan,message=FALSE,eval=FALSE}
 library(glmmTMB)
@@ -213,7 +224,6 @@ glmmTMB_mcmc <- tmbstan(glmmTMB1$obj)
 broom.mixed::tidy(glmmTMB_mcmc)
 ```
 
----
 
 ## Histograms vs densities of posterior distributions
 
@@ -224,7 +234,7 @@ a practical sense, but I was curious whether the various priors we
 set actually shifted the posterior mode away from zero or not.)
 Histograms can help in this case:
 
-```{r}
+```{r hist1}
 source("../R/histogram.mcmc.R")
 histogram(
     as.mcmc(mcmcglmm2$VCV),  ## convert matrix to `mcmc` object
@@ -235,7 +245,7 @@ histogram(
 
 or with `ggplot`:
 
-```{r fig.width=8,fig.height=4}
+```{r gghist, fig.width=8,fig.height=4}
 mmr <- reshape2::melt(as.matrix(mcmcglmm2$VCV))
 ggplot(mmr,aes(value))+
     geom_histogram(binwidth=0.5,colour="black")+
