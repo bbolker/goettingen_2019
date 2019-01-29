@@ -11,7 +11,7 @@
 
 <meta name="author" content="Ben Bolker" />
 
-<meta name="date" content="2019-01-27" />
+<meta name="date" content="2019-01-29" />
 
 <title>Bayesian computational mixed models in R</title>
 
@@ -187,7 +187,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Bayesian computational mixed models in R</h1>
 <h4 class="author"><em>Ben Bolker</em></h4>
-<h4 class="date"><em>27 January 2019</em></h4>
+<h4 class="date"><em>29 January 2019</em></h4>
 
 </div>
 
@@ -233,13 +233,13 @@ $(document).ready(function () {
 <li>fixed-effect parameters <span class="citation">(Greenland and Mansournia 2015)</span>
 <ul>
 <li>typically Normal, mean 0, std dev 3–5</li>
-<li>assume parameters are scaled or log/logit scale</li>
-<li><span class="math inline">\(t\)</span>/Cauchy allow heavier tails, but Normal is easier</li>
+<li>assume parameters are scaled or on log/logit scale</li>
+<li>Student-<span class="math inline">\(t\)</span>/Cauchy allow heavier tails</li>
 </ul></li>
 <li>variance parameters
 <ul>
 <li>Gamma(small shape): typical but problematic</li>
-<li>Gamma(2): weakly regularizing</li>
+<li>Gamma(shape=2,<span class="math inline">\(\lambda \to 0\)</span>): weakly regularizing <span class="citation">(Chung et al. 2013)</span> (<code>blme</code> package)</li>
 </ul></li>
 <li>correlation matrices
 <ul>
@@ -311,7 +311,7 @@ $(document).ready(function () {
 <div id="diagnostics-tests-of-convergence" class="section level2">
 <h2>Diagnostics: tests of convergence</h2>
 <ul>
-<li>Gelman-Rubin statistic (<em>potential scale reduction factor</em>: <span class="math inline">\(R &lt; 1.2\)</span>); needs multiple chains</li>
+<li>Gelman-Rubin statistic (<em>potential scale reduction factor</em>: <span class="math inline">\(R &lt; 1.1\)</span>? 1.02?); needs multiple chains <span class="citation">(Vats and Knudson 2018)</span></li>
 <li>effective sample size (<span class="math inline">\(&gt;500\)</span>)</li>
 <li>traceplot (should look like white noise)</li>
 </ul>
@@ -361,6 +361,9 @@ $(document).ready(function () {
 <div id="ref-carpenter_computational_2017">
 <p>Carpenter, Bob. 2017. “Computational and Statistical Issues with Uniform Interval Priors.” <em>Statistical Modeling, Causal Inference, and Social Science</em>. <a href="http://andrewgelman.com/2017/11/28/computational-statistical-issues-uniform-interval-priors/" class="uri">http://andrewgelman.com/2017/11/28/computational-statistical-issues-uniform-interval-priors/</a>.</p>
 </div>
+<div id="ref-chung_nondegenerate_2013">
+<p>Chung, Yeojin, Sophia Rabe-Hesketh, Vincent Dorie, Andrew Gelman, and Jingchen Liu. 2013. “A Nondegenerate Penalized Likelihood Estimator for Variance Parameters in Multilevel Models.” <em>Psychometrika</em>, 1–25. doi:<a href="https://doi.org/10.1007/s11336-013-9328-2">10.1007/s11336-013-9328-2</a>.</p>
+</div>
 <div id="ref-Crome+1996">
 <p>Crome, F. H. J., M. R. Thomas, and L. A. Moore. 1996. “A Novel Bayesian Approach to Assessing Impacts of Rain Forest Logging.” <em>Ecological Applications</em> 6: 1104–23.</p>
 </div>
@@ -375,6 +378,9 @@ $(document).ready(function () {
 </div>
 <div id="ref-McCarthy2007">
 <p>McCarthy, M. 2007. <em>Bayesian Methods for Ecology</em>. Cambridge, England: Cambridge University Press.</p>
+</div>
+<div id="ref-vats_revisiting_2018">
+<p>Vats, Dootika, and Christina Knudson. 2018. “Revisiting the Gelman-Rubin Diagnostic.” <em>ArXiv:1812.09384 [Stat]</em>, December. <a href="http://arxiv.org/abs/1812.09384" class="uri">http://arxiv.org/abs/1812.09384</a>.</p>
 </div>
 </div>
 </div>

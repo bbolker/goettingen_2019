@@ -142,11 +142,11 @@ i2(f2)
 
 - fixed-effect parameters  [@greenland_penalization_2015]
     - typically Normal, mean 0, std dev 3--5 
-    - assume parameters are scaled or log/logit scale
-	- $t$/Cauchy allow heavier tails, but Normal is easier
+    - assume parameters are scaled or on log/logit scale
+	- Student-$t$/Cauchy allow heavier tails
 - variance parameters
     - Gamma(small shape): typical but problematic
-    - Gamma(2): weakly regularizing
+    - Gamma(shape=2,$\lambda \to 0$): weakly regularizing [@chung_nondegenerate_2013] (`blme` package)
 - correlation matrices
     - Wishart, inverse-Wishart: small shape parameters
     - LKJ or "onion" priors [@lewandowski_generating_2009]: `eta>1` makes extreme correlations less likely
@@ -201,7 +201,7 @@ e.g.
 
 ## Diagnostics: tests of convergence
 
-- Gelman-Rubin statistic (*potential scale reduction factor*: $R < 1.2$); needs multiple chains
+- Gelman-Rubin statistic (*potential scale reduction factor*: $R <  1.1$? 1.02?); needs multiple chains [@vats_revisiting_2018]
 - effective sample size ($>500$)
 - traceplot (should look like white noise)
 
