@@ -345,7 +345,8 @@ $(document).ready(function () {
 <p>Maximal model <strong>often won’t work</strong></p>
 <p>e.g.</p>
 <ul>
-<li><em>Culcita</em> (coral-reef) example: randomized-block design, so each treatment (none/crabs/shrimp/both) is repeated in every block; thus <code>(treat|block)</code></li>
+<li><em>Culcita</em> (coral-reef) example: randomized-block design, so each treatment (none/crabs/shrimp/both) is repeated in every block; thus <code>(treat|block)</code> is maximal</li>
+<li>CBPP data: each herd is measured in every period, so in principle we could use <code>(period|herd)</code>, not just <code>(1|herd)</code></li>
 </ul>
 </div>
 <div id="random-slopes-models-what-does-xg-really-do" class="section level2">
@@ -508,6 +509,40 @@ names(ss)</code></pre>
 <ul>
 <li><code>allFit</code> can be run in parallel</li>
 </ul>
+</div>
+<div id="how-to-decide-what-model-to-use" class="section level2">
+<h2>How to decide what model to use?</h2>
+<ul>
+<li>Most complex RE model that can reasonably be fitted</li>
+<li>Lots of disagreement
+<ul>
+<li><span class="citation">Barr et al. (2013)</span>: “keep it maximal”</li>
+<li><span class="citation">Bates et al. (2015)</span>, <span class="citation">Matuschek et al. (2017)</span>: more initial parsimony</li>
+<li>? use most complex non-singular model ?</li>
+</ul></li>
+</ul>
+<p>PCA of RE variance-covariance matrix:</p>
+<pre class="r"><code>rePCA(m1)</code></pre>
+<pre><code>## Loading required package: lmerTest</code></pre>
+<pre><code>## 
+## Attaching package: 'lmerTest'</code></pre>
+<pre><code>## The following object is masked from 'package:lme4':
+## 
+##     lmer</code></pre>
+<pre><code>## The following object is masked from 'package:stats':
+## 
+##     step</code></pre>
+<pre><code>## $Subject
+## Standard deviations (1, .., p=2):
+## [1] 0.9667077 0.2309094
+## 
+## Rotation (n x k) = (2 x 2):
+##             [,1]        [,2]
+## [1,] -0.99986121 -0.01666021
+## [2,] -0.01666021  0.99986121
+## 
+## attr(,&quot;class&quot;)
+## [1] &quot;prcomplist&quot;</code></pre>
 </div>
 <div id="restricted-maximum-likelihood-reml" class="section level2">
 <h2>Restricted maximum likelihood (REML)</h2>
@@ -757,9 +792,21 @@ contrast(e2,&quot;pairwise&quot;)</code></pre>
 ## nitro:Variety  0.3512  2     61   0.70524    
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2>References</h2>
 <div id="refs" class="references">
+<div id="ref-barr_random_2013">
+<p>Barr, Dale J., Roger Levy, Christoph Scheepers, and Harry J. Tily. 2013. “Random Effects Structure for Confirmatory Hypothesis Testing: Keep It Maximal.” <em>Journal of Memory and Language</em> 68 (3): 255–78. doi:<a href="https://doi.org/10.1016/j.jml.2012.11.001">10.1016/j.jml.2012.11.001</a>.</p>
+</div>
+<div id="ref-bates_parsimonious_2015">
+<p>Bates, Douglas, Reinhold Kliegl, Shravan Vasishth, and Harald Baayen. 2015. “Parsimonious Mixed Models.” <em>ArXiv:1506.04967 [Stat]</em>, June. <a href="http://arxiv.org/abs/1506.04967" class="uri">http://arxiv.org/abs/1506.04967</a>.</p>
+</div>
 <div id="ref-bolker_glmm_2014">
 <p>Bolker, Benjamin M. 2015. “Linear and Generalized Linear Mixed Models.” In <em>Ecological Statistics: Contemporary Theory and Application</em>, edited by Gordon A. Fox, Simoneta Negrete-Yankelevich, and Vinicio J. Sosa. Oxford University Press.</p>
+</div>
+<div id="ref-matuschek_balancing_2017">
+<p>Matuschek, Hannes, Reinhold Kliegl, Shravan Vasishth, Harald Baayen, and Douglas Bates. 2017. “Balancing Type I Error and Power in Linear Mixed Models.” <em>Journal of Memory and Language</em> 94: 305–15. doi:<a href="https://doi.org/10.1016/j.jml.2017.01.001">10.1016/j.jml.2017.01.001</a>.</p>
 </div>
 </div>
 </div>

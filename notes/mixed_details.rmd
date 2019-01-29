@@ -162,7 +162,8 @@ Maximal model **often won't work**
 
 e.g.
 
-- *Culcita* (coral-reef) example: randomized-block design, so each treatment (none/crabs/shrimp/both) is repeated in every block; thus `(treat|block)`
+- *Culcita* (coral-reef) example: randomized-block design, so each treatment (none/crabs/shrimp/both) is repeated in every block; thus `(treat|block)` is maximal
+- CBPP data: each herd is measured in every period, so in principle we could use `(period|herd)`, not just `(1|herd)`
 
 ## Random-slopes models: what does `(x|g)` really do?
 
@@ -313,6 +314,20 @@ ss$llik-min(ss$llik)
 ```
 
 - `allFit` can be run in parallel
+
+## How to decide what model to use?
+
+- Most complex RE model that can reasonably be fitted
+- Lots of disagreement
+     - @barr_random_2013: "keep it maximal"
+     - @bates_parsimonious_2015, @matuschek_balancing_2017: more initial parsimony
+	 - ? use most complex non-singular model ?
+
+PCA of RE variance-covariance matrix:
+
+```{r rePCA}
+rePCA(m1)
+```
 
 ## Restricted maximum likelihood (REML)
 
@@ -483,3 +498,5 @@ also see the `effects` package.
 ```{r oats_anova}
 car::Anova(m_oats,test="F")
 ```
+
+## References
