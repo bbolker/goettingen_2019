@@ -89,17 +89,20 @@ s1$BroodSize <- NULL
 sjPlot::plot_grid(s1)
 ```
 
-```{r}
+```{r effectsplot}
 library(effects)
 plot(allEffects(owls_nb1))
 ```
 
-```{r}
+```{r emmeansplot}
 library(emmeans)
-plot(emmeans(owls_nb1, ~SexParent|FoodTreatment))
+plot(emtrends(owls_nb1, ~SexParent|FoodTreatment, var="ArrivalTime"))
+plot(emmeans(owls_nb1, ~SexParent|FoodTreatment, at=list(ArrivalTime=23)))
 ```
 
-##
+## Prediction
+
+A quick-and-dirty approach to prediction (fixed-effect variability only):
 
 ```{r predvar}
 ## make prediction data frame
@@ -122,6 +125,14 @@ newdat$upr <- with(newdat,linkinv(pred1+2*SE))
 newdat$SiblingNegotiation <- linkinv(newdat$pred1)
 ```
 
+```{r try_bootmer, eval=FALSE}
+newdat$Nest <- NA
+newdat$BroodSize <- 1
+predfun <- function(m) predict(m,data=newdat)
+bb <- bootMer(owls_nb1, FUN=predfun, nsim=100)
+## ugh ...
+refit(owls_nb1,simulate(owls_nb1))
+```
 ## List of possible topics
 
 - effect size measures/$R^2$

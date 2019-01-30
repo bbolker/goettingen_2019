@@ -11,7 +11,7 @@
 
 <meta name="author" content="Ben Bolker" />
 
-<meta name="date" content="2019-01-29" />
+<meta name="date" content="2019-01-30" />
 
 <title>Bayesian lab</title>
 
@@ -187,7 +187,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Bayesian lab</h1>
 <h4 class="author"><em>Ben Bolker</em></h4>
-<h4 class="date"><em>29 January 2019</em></h4>
+<h4 class="date"><em>30 January 2019</em></h4>
 
 </div>
 
@@ -275,7 +275,7 @@ library(bayesplot)</code></pre>
 </div>
 <div id="parameter-expanded-priors" class="section level2">
 <h2>parameter-expanded priors:</h2>
-<p>The pathologies of the mathematically convenient conjugate (inverse-gamma/inverse-Wishart) priors can be overcome in <code>MCMCglmm</code> by changing to what are called <em>parameter-expanded priors</em> (see Section 8.0.2 in the “CourseNotes” vignette of the <code>MCMCglmm</code> package: <code>vignette(&quot;CourseNotes&quot;,package=&quot;MCMCglmm&quot;)</code> or <a href="https://cran.r-project.org/web/packages/MCMCglmm/vignettes/CourseNotes.pdf">here</a>. This is mathematically a bit complicated, but practically it boils down to specifying four parameters (<code>V</code>, <code>nu</code>, <code>alpha.mu</code>, and <code>alpha.mu</code>) instead of two. The good news is that you can generally set <code>V=1</code> and <code>alpha.mu=0</code>, which leaves only two to choose from. <code>alpha.V</code> gives the expected variance (so <code>sqrt(alpha.V)</code> is the expected standard deviation), and <code>nu</code> is now equivalent to the degrees of freedom for a <span class="math inline">\(t\)</span>-distribution. Setting <code>V=1, nu=nu, alpha.mu = 0, alpha.V=s^2</code> gives a half-<span class="math inline">\(t\)</span> distribution with standard deviation <code>s</code> and df <code>nu</code>, e.g. for <code>nu=1</code>, <code>s=25</code>:</p>
+<p>The pathologies of the mathematically convenient conjugate (inverse-gamma/inverse-Wishart) priors can be overcome in <code>MCMCglmm</code> by changing to what are called <em>parameter-expanded priors</em> (see Section 8.0.2 in the “CourseNotes” vignette of the <code>MCMCglmm</code> package: <code>vignette(&quot;CourseNotes&quot;,package=&quot;MCMCglmm&quot;)</code> or <a href="https://cran.r-project.org/web/packages/MCMCglmm/vignettes/CourseNotes.pdf">here</a>. This is mathematically a bit complicated, but practically it boils down to specifying four parameters (<code>V</code>, <code>nu</code>, <code>alpha.mu</code>, and <code>alpha.V</code>) instead of two. The good news is that you can generally set <code>V=1</code> and <code>alpha.mu=0</code>, which leaves only two to choose from. <code>alpha.V</code> gives the expected variance (so <code>sqrt(alpha.V)</code> is the expected standard deviation), and <code>nu</code> is now equivalent to the degrees of freedom for a <span class="math inline">\(t\)</span>-distribution. Setting <code>V=1, nu=nu, alpha.mu = 0, alpha.V=s^2</code> gives a half-<span class="math inline">\(t\)</span> distribution with standard deviation <code>s</code> and df <code>nu</code>, e.g. for <code>nu=1</code>, <code>s=25</code>:</p>
 <pre class="r"><code>par(las=1,bty=&quot;l&quot;)
 curve(dt(x/25,df=1),from=0,to=500,ylim=c(0,0.35),
       ylab=&quot;prob density&quot;)
