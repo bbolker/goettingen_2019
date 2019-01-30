@@ -51,7 +51,7 @@ piecewiseSEM::rsquared(gmod_lme4_L)
 MuMIn::r.squaredGLMM(gmod_lme4_L)
 ```
 
-```{r dwplot1,echo=FALSE}
+```{r dwplot1,echo=FALSE,fig.width=10}
 ## convenience function; dwplot with ref line and title
 tfun <- function(title="",by_2sd=TRUE) {
     (dotwhisker::dwplot(gmod_lme4_L,effect="fixed",by_2sd=by_2sd)
