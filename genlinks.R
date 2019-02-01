@@ -4,3 +4,6 @@ gen_link <- function(pkg) {
             pkg,pkg)
 }
 RD <- revdep("lme4")
+pkgs <- c(grep("[Pp]ow",RD,value=TRUE),"simr")
+cat(gen_link(pkgs),sep="\n")
+                                               
