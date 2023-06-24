@@ -377,7 +377,7 @@ If you wanted to compute the $p$-values by hand, you could:
 ## method from lme4 rather than the one from lmerTest
 a2 <- lme4:::anova.merMod(lmer2B)
 fvals <- a2[,"F value"]
-numdf <- a2[,"Df"]
+numdf <- a2[,"npar"]
 dendf <- 36
 pf(fvals,numdf,dendf,lower.tail=FALSE)
 ```

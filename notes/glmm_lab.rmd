@@ -2,7 +2,7 @@
 title: "Mixed model lab #2 (GLMMs)"
 author: Ben Bolker
 date: "`r format(Sys.time(), '%H:%M %d %B %Y ')`"
-bibliography: "../glmm.bib"
+bibliography: "../../glmm.bib"
 ---
 
 ![cc](pix/cc-attrib-nc.png)

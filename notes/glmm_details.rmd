@@ -1,7 +1,7 @@
 ---
 title: "Generalized linear mixed models in R: nitty-gritty"
 author: Ben Bolker
-bibliography: "../glmm.bib"
+bibliography: "../../glmm.bib"
 date: "`r format(Sys.time(), '%d %B %Y ')`"
 ---
 

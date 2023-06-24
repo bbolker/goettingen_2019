@@ -82,6 +82,7 @@ glmmTMB(TICKS~scHEIGHT*YEAR,data=ticks,family=nbinom2)
 - e.g. logit-Normal-binomial, or log-Normal-Poisson
 
 ```{r}
+library(lme4)
 ticks <- transform(ticks,
         obs=1:nrow(ticks))
 ticks_OR <- glmer(TICKS~scHEIGHT*YEAR+(1|obs),data=ticks,

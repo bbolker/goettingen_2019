@@ -1,7 +1,7 @@
 ---
 author: "Ben Bolker"
 title: "statistical essentials for modeling"
-bibliography: ../glmm.bib
+bibliography: ../../glmm.bib
 ---
 
 ![cc](pix/cc-attrib-nc.png)

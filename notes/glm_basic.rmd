@@ -1,7 +1,7 @@
 ---
 title: "basic generalized linear models"
 author: "Ben Bolker"
-bibliography: "../glmm.bib"
+bibliography: "../../glmm.bib"
 ---
 
 ![cc](pix/cc-attrib-nc.png)

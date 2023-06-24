@@ -1,7 +1,7 @@
 ---
 title: "generalized linear mixed models"
 author: "Ben Bolker"
-bibliography: "../glmm.bib"
+bibliography: "../../glmm.bib"
 csl: ../apa.csl
 output:
    ioslides_presentation
@@ -46,6 +46,10 @@ img {
 }
 </style>
 
+![cc](pix/cc-attrib-nc.png)
+Licensed under the 
+[Creative Commons attribution-noncommercial license](http://creativecommons.org/licenses/by-nc/3.0/).
+Please share \& remix noncommercially, mentioning its origin.
 
 ```{r knitr,include=FALSE}
 require("knitr")
