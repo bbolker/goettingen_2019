@@ -61,7 +61,7 @@ sscrape <- function(string="logistic+regression") {
 ``` 
 
 ```{r gscrapedata,echo=FALSE}
-fn <- "../data/gscrape.RData"
+fn <- "../../data/gscrape.RData"
 ## could use a caching solution for Sweave (cacheSweave, weaver package,
 ##  pgfSweave ... but they're all slightly wonky with keep.source at
 ##  the moment
@@ -213,7 +213,7 @@ knitr::opts_chunk$set(echo=TRUE)
 ```
 
 ```{r aids_ex_1,fig.width=10,fig.height=5}
-aids <- read.csv("../data/aids.csv")
+aids <- read.csv("../../data/aids.csv")
 ## set up time variable
 aids <- transform(aids, date=year+(quarter-1)/4)
 print(gg0 <- ggplot(aids,aes(date,cases))+geom_point())
@@ -294,7 +294,7 @@ Also see `nlme::ACF` for ACFs of grouped data ...
 
 ## exercise
 
-- pick a data set (from the [course data sets](../data/datasets.html) if you like; OK to ignore grouping/clustering for now)
+- pick a data set (from the [course data sets](../../data/datasets.html) if you like; OK to ignore grouping/clustering for now)
 - decide on a family and set of predictors
 - decide on predictors
 - fit a model

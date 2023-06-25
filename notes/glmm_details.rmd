@@ -48,7 +48,7 @@ In `lme4`, use the `nAGQ=` argument; `nAGQ=1` (default) corresponds to Laplace a
 library(lattice)
 aspect <- 0.6
 xlab <- "z"; ylab <- "density"; type <- c("g","l"); scaled <- FALSE
-mm <- readRDS("../data/toenail_lapldiag.rds")
+mm <- readRDS("../../data/toenail_lapldiag.rds")
 print(xyplot(y ~ zvals|id, data=mm,
              type=type, aspect=aspect,
              xlab=xlab,ylab=ylab,

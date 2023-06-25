@@ -24,7 +24,7 @@ library(bayesplot)
 ```
 
 ```{r data}
-load("../data/starling.RData")   ## loads "dataf"
+load("../../data/starling.RData")   ## loads "dataf"
 ```
 
 As a preliminary/context for the difficulties we will experience
@@ -235,7 +235,7 @@ set actually shifted the posterior mode away from zero or not.)
 Histograms can help in this case:
 
 ```{r hist1}
-source("../R/histogram.mcmc.R")
+source("../../R/histogram.mcmc.R")
 histogram(
     as.mcmc(mcmcglmm2$VCV),  ## convert matrix to `mcmc` object
     layout=c(2,1),           ## customize panel arrangement

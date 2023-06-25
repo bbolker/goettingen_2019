@@ -37,7 +37,7 @@ Visual perception of quantitative information: [Cleveland hierarchy](http://proc
 * join data within a group by lines (perhaps thin/transparent)
 * colour lines by group (more useful for explanatory than presentation graphics)
 * dynamic graphics (hovertext; `plotly::ggplotly`)
-* other ways to indicate grouping: `stat_ellipse`, `ggalt::geom_encircle`, `stat_centseg` (from `../R/geom_cstar.R`)
+* other ways to indicate grouping: `stat_ellipse`, `ggalt::geom_encircle`, `stat_centseg` (from `../../R/geom_cstar.R`)
 * depends on context: how many groups, what kind of predictors? time series or scatterplots?
 
 `ggplot2` makes it fairly easy to do a simple *two-stage* analysis on the fly using `geom_smooth`, e.g. with the CBPP data discussed below:
@@ -75,7 +75,7 @@ Visual perception of quantitative information: [Cleveland hierarchy](http://proc
 -   **geoms**:
    - simple: `geom_point`, `geom_line`
 ```{r ex,fig.keep="none", message=FALSE}
-load("../data/gopherdat2.RData")
+load("../../data/gopherdat2.RData")
 library("ggplot2"); theme_set(theme_bw())
 (ggplot(Gdat,aes(x=year,y=shells/Area,colour=Site))
     + geom_point()
@@ -92,7 +92,7 @@ See [Karthik Ram's ggplot intro](https://github.com/karthikram/ggplot-lecture) o
 
 ```{r pkgs,message=FALSE}
 library("ggalt")
-source("../R/geom_cstar.R")
+source("../../R/geom_cstar.R")
 ```
 
 ## time series: cbpp data set
@@ -156,7 +156,7 @@ Gopher tortoise data (from @ozgul_upper_2009, see [ecostats chapter](http://bbol
 Plot density of shells from freshly dead tortoises (`shells/Area`) as a function of mycoplasmal prevalence (%, `prev`): you may want to consider site, year of collection, or population density as well.
 
 ```{r gopher1,fig.keep="none"}
-load("../data/gopherdat2.RData")
+load("../../data/gopherdat2.RData")
 g5 <- ggplot(Gdat,aes(prev,shells/Area))+geom_point()
 ```
 
@@ -175,7 +175,7 @@ Easier if there is one data point per group (connect with lines),
 but 
 
 ```{r banta1,fig.keep="none"}
-load("../data/Banta.RData")
+load("../../data/Banta.RData")
 ## dat.tf$ltf1 <- log(dat.tf$total.fruits+1)
 g6 <- ggplot(dat.tf,aes(nutrient,total.fruits,colour=gen))+
     geom_point()+

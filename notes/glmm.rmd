@@ -2,7 +2,7 @@
 title: "generalized linear mixed models"
 author: "Ben Bolker"
 bibliography: "../../glmm.bib"
-csl: ../apa.csl
+csl: ../../apa.csl
 output:
    ioslides_presentation
        toc:true
@@ -97,7 +97,7 @@ theme_set(theme_bw())
 
 ```{r culcita1,cache=TRUE,message=FALSE,warning=FALSE}
 ## Culcita fits
-stierdat <- read.csv("../data/culcitalogreg.csv")
+stierdat <- read.csv("../../data/culcitalogreg.csv")
 stierdat$ttt <- as.factor(stierdat$ttt) ## treatment should be a factor
 ## contrast matrix
 cmat <- matrix(c(0,1,1,1,0,1,-1,0,0,1,1,-2),ncol=3,
@@ -122,7 +122,7 @@ p <- with(m3,table(predation,ttt))
 
 
 ```{r culcita2,warning=FALSE,message=FALSE}
-load("../data/culcita.RData")
+load("../../data/culcita.RData")
 library(lme4)
 cmod1 <- glmer(predation~ttt+(1|block),data=culcita_dat,
                family=binomial,nAGQ=10)
@@ -184,7 +184,7 @@ par(op)
 ## Environmental stress: *Glycera* cell survival (D. Julian unpubl.)
 
 ```{r glycera}
-x <- read.csv("../data/Live-Dead Tabulated Counts.csv")
+x <- read.csv("../../data/Live-Dead Tabulated Counts.csv")
 ## utility function for factoring/renaming variables before
 ##  lattice plot
 rnfac <- function(dat,vars) {
@@ -270,7 +270,7 @@ function (x, y, jitter.data = FALSE, factor = 0.5, amount = NULL,
         amount = amount, groups = groups, horizontal = horizontal, 
         ...)
 }
-load("../data/Banta.RData")
+load("../../data/Banta.RData")
 trellis.par.set(list(fontsize=list(text=20)))
 stripplot(jltf ~ amd|nutrient, 
                 data=within(dat.tf,jltf <-jitter(log(total.fruits+1),
@@ -285,10 +285,10 @@ stripplot(jltf ~ amd|nutrient,
 ## Coral demography (J.-S. White unpubl.)
 
 ```{r coral_demog,warning=FALSE}
-L <- load("../data/m.acr.jagsout.RData")
-L2 <- load("../data/m.acr.lme4out.RData")
-L3 <- load("../data/demog.mort.18apr.RData")
-source("../R/demog_mort_funs.R")
+L <- load("../../data/m.acr.jagsout.RData")
+L2 <- load("../../data/m.acr.lme4out.RData")
+L3 <- load("../../data/demog.mort.18apr.RData")
+source("../../R/demog_mort_funs.R")
 plotfun(j.red2,m.acr.nofr,drop.cols=c(4,8))
 ```
 
@@ -558,7 +558,7 @@ approximation for GLM(M)s
 ## finite-size p-values??
 
 - hope that min grps > 42
-- guess denominator DF from classic design ([R code](../R/calcDenDF.R))
+- guess denominator DF from classic design ([R code](../../R/calcDenDF.R))
 - conservative: take minimum number of groups - 1
 - Satterthwaite/Kenward-Roger (`lmerTest`, LMMs only)
 - parametric bootstrap (`pbkrtest`)

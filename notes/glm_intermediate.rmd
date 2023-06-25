@@ -24,7 +24,7 @@ library(aods3)
 ## Tick example
 
 ```{r tick_plot}
-ticks <- read.table("../data/Elston2001_tickdata.txt",header=TRUE)
+ticks <- read.table("../../data/Elston2001_tickdata.txt",header=TRUE)
 ticks <- transform(ticks,
           YEAR=factor(YEAR),
           scHEIGHT=(HEIGHT-min(HEIGHT))/100)

@@ -39,7 +39,7 @@ Example: using `r2glmm::r2beta()` package with `method="nsj"` [@nakagawa_general
 
 ```{r grsq}
 library(lme4)
-load("../data/gopherdat2.RData")
+load("../../data/gopherdat2.RData")
 Gdat <- transform(Gdat,fYear=factor(year))
 gmod_lme4_L <- glmer(shells~prev+fYear+(1|Site),
                      offset=log(Area),
