@@ -46,11 +46,6 @@ img {
 }
 </style>
 
-![cc](pix/cc-attrib-nc.png)
-Licensed under the 
-[Creative Commons attribution-noncommercial license](http://creativecommons.org/licenses/by-nc/3.0/).
-Please share \& remix noncommercially, mentioning its origin.
-
 ```{r knitr,include=FALSE}
 require("knitr")
 knit_hooks$set(crop=hook_pdfcrop)
@@ -75,6 +70,13 @@ zmargin <- theme(panel.spacing=unit(0,"lines"))
 library(scales) ## for 'scientific', 'trans_format'
 theme_set(theme_bw())
 ```
+
+## license
+
+![cc](pix/cc-attrib-nc.png)
+Licensed under the 
+[Creative Commons attribution-noncommercial license](http://creativecommons.org/licenses/by-nc/3.0/).
+Please share \& remix noncommercially, mentioning its origin.
 
 
 ## (Generalized) linear mixed models
@@ -518,7 +520,7 @@ best methods needed for large variance, small clusters
 
 ## Estimation: *Culcita* [@mckeon_multiple_2012]
 
-````{r stierfig2,warning=FALSE,fig.width=8,fig.height=8}
+```{r stierfig2,warning=FALSE,fig.width=8,fig.height=8}
 library(coefplot2)
 cvec <- c("purple","magenta","blue","black","darkgreen")
 mnames <- c("GLM (fixed)","GLM (pooled)","PQL","Laplace","AGQ")
