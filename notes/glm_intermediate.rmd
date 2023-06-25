@@ -24,7 +24,7 @@ library(aods3)
 ## Tick example
 
 ```{r tick_plot}
-ticks <- read.table("../data/Elston2001_tickdata.txt",header=TRUE)
+ticks <- read.table("../../data/Elston2001_tickdata.txt",header=TRUE)
 ticks <- transform(ticks,
           YEAR=factor(YEAR),
           scHEIGHT=(HEIGHT-min(HEIGHT))/100)
@@ -82,6 +82,7 @@ glmmTMB(TICKS~scHEIGHT*YEAR,data=ticks,family=nbinom2)
 - e.g. logit-Normal-binomial, or log-Normal-Poisson
 
 ```{r}
+library(lme4)
 ticks <- transform(ticks,
         obs=1:nrow(ticks))
 ticks_OR <- glmer(TICKS~scHEIGHT*YEAR+(1|obs),data=ticks,

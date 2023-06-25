@@ -58,7 +58,7 @@ Data from Toby Marthews, [r-sig-mixed-models mailing list](http://tolstoy.newcas
 
 ```{r starling1,fig.height=4,fig.width=7}
 ## cosmetic tweaks
-load("../data/starling.RData")   ## loads "dataf"
+load("../../data/starling.RData")   ## loads "dataf"
 ggplot(dataf,aes(x=mnth,y=stmass))+
   geom_point()+
   geom_line(aes(group=subject))+  ## connect subjects with a line
@@ -303,7 +303,7 @@ the answers are basically identical.
 
 Can use the algorithm that `lme` uses:
 ```{r calcDenDF}
-source("../R/calcDenDF.R")
+source("../../R/calcDenDF.R")
 calcDenDF(~mnth*roostsitu,data=dataf,random=~1|subject)
 ```
 
@@ -377,7 +377,7 @@ If you wanted to compute the $p$-values by hand, you could:
 ## method from lme4 rather than the one from lmerTest
 a2 <- lme4:::anova.merMod(lmer2B)
 fvals <- a2[,"F value"]
-numdf <- a2[,"Df"]
+numdf <- a2[,"npar"]
 dendf <- 36
 pf(fvals,numdf,dendf,lower.tail=FALSE)
 ```
